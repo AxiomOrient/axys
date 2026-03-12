@@ -5,12 +5,16 @@ import MCP
 public enum DSMCPServerFactory {
     public static let toolNames = [
         "doctor",
-        "compile_screen_doc",
-        "validate_spec",
-        "generate_screen",
-        "generate_bundle",
+        "validate_app",
+        "validate_flow",
+        "validate_screen",
+        "render_html",
+        "generate_native",
+        "sync_penpot",
+        "sync_pencil",
+        "build_sample_apps",
         "preview_serve",
-        "audit_project",
+        "audit",
     ]
 
     public static func makeServer(service: ProjectService = ProjectService()) async -> Server {
@@ -34,71 +38,98 @@ public enum DSMCPServerFactory {
                     inputSchema: .object([:])
                 ),
                 Tool(
-                    name: "compile_screen_doc",
-                    description: "Compile one screen-doc markdown file into a ScreenSpec JSON file",
+                    name: "validate_app",
+                    description: "Validate one AppSpec and its contracts",
                     inputSchema: .object([
                         "properties": .object([
-                            "config": .string("Path to dsctl.config.json"),
-                            "screenId": .string("Screen id such as 'login'"),
-                            "screenDoc": .string("Path to the screen-doc markdown file"),
-                            "out": .string("Output path for the compiled .screen.json file"),
+                            "app": .string("Path to the AppSpec YAML or JSON file"),
                         ])
                     ])
                 ),
                 Tool(
-                    name: "validate_spec",
-                    description: "Validate one ScreenSpec or one screen-doc",
+                    name: "validate_flow",
+                    description: "Validate one FlowSpec and its screens",
                     inputSchema: .object([
                         "properties": .object([
-                            "spec": .string("Path to the .screen.json file"),
-                            "screenDoc": .string("Path to the screen-doc markdown file"),
-                            "tokens": .string("Path to the token directory"),
-                            "catalog": .string("Path to the component catalog JSON file"),
+                            "flow": .string("Path to the FlowSpec YAML or JSON file"),
                         ])
                     ])
                 ),
                 Tool(
-                    name: "generate_bundle",
-                    description: "Generate artifacts for every ScreenSpec or screen-doc in a directory",
+                    name: "validate_screen",
+                    description: "Validate one screen contract inside its flow/app context",
                     inputSchema: .object([
                         "properties": .object([
-                            "specDir": .string("Path to the ScreenSpec directory"),
-                            "screenDocDir": .string("Path to the screen-doc directory"),
-                            "tokens": .string("Path to the token directory"),
-                            "catalog": .string("Path to the component catalog JSON file"),
-                            "out": .string("Output directory for generated artifacts"),
+                            "screen": .string("Path to the screen contract YAML or JSON file"),
                         ])
                     ])
                 ),
                 Tool(
-                    name: "generate_screen",
-                    description: "Generate artifacts for one ScreenSpec or one screen-doc",
+                    name: "render_html",
+                    description: "Render one screen contract into an HTML review bundle",
                     inputSchema: .object([
                         "properties": .object([
-                            "spec": .string("Path to the .screen.json file"),
-                            "screenDoc": .string("Path to the screen-doc markdown file"),
-                            "tokens": .string("Path to the token directory"),
-                            "catalog": .string("Path to the component catalog JSON file"),
-                            "out": .string("Output directory for generated artifacts"),
+                            "screen": .string("Path to the screen contract YAML or JSON file"),
+                            "out": .string("Output directory for the HTML report"),
+                        ])
+                    ])
+                ),
+                Tool(
+                    name: "generate_native",
+                    description: "Generate one screen contract into registry-backed native source",
+                    inputSchema: .object([
+                        "properties": .object([
+                            "screen": .string("Path to the screen contract YAML or JSON file"),
+                            "platform": .string("Native platform (ios|android)"),
+                            "out": .string("Output directory for generated native sources"),
+                        ])
+                    ])
+                ),
+                Tool(
+                    name: "sync_penpot",
+                    description: "Export one AppSpec into a deterministic Penpot payload",
+                    inputSchema: .object([
+                        "properties": .object([
+                            "app": .string("Path to the AppSpec YAML or JSON file"),
+                            "out": .string("Output directory for the adapter payload"),
+                        ])
+                    ])
+                ),
+                Tool(
+                    name: "sync_pencil",
+                    description: "Export one AppSpec into a deterministic Pencil payload",
+                    inputSchema: .object([
+                        "properties": .object([
+                            "app": .string("Path to the AppSpec YAML or JSON file"),
+                            "out": .string("Output directory for the adapter payload"),
+                        ])
+                    ])
+                ),
+                Tool(
+                    name: "build_sample_apps",
+                    description: "Build and smoke-test sample app harnesses",
+                    inputSchema: .object([
+                        "properties": .object([
+                            "app": .string("Path to the AppSpec YAML or JSON file"),
                         ])
                     ])
                 ),
                 Tool(
                     name: "preview_serve",
-                    description: "Start a local HTML preview server",
+                    description: "Serve a preview bundle directory over HTTP",
                     inputSchema: .object([
                         "properties": .object([
-                            "dir": .string("Directory that contains generated HTML preview artifacts"),
-                            "port": .string("Port number to serve on"),
+                            "directory": .string("Directory to serve"),
+                            "port": .object(["type": .string("integer")]),
                         ])
                     ])
                 ),
                 Tool(
-                    name: "audit_project",
-                    description: "Audit docs, schemas, examples, and prompts",
+                    name: "audit",
+                    description: "Check that the repo still matches the active contract-first shape",
                     inputSchema: .object([
                         "properties": .object([
-                            "projectRoot": .string("Project root path"),
+                            "projectRoot": .string("Project root to inspect"),
                         ])
                     ])
                 ),
@@ -112,110 +143,63 @@ public enum DSMCPServerFactory {
                 switch params.name {
                 case "doctor":
                     return .init(content: [.text(try service.encodeJSON(service.doctor()))], isError: false)
-                case "compile_screen_doc":
-                    let report: CompileScreenDocReport
-                    if let config = optionalString("config", in: params.arguments) {
-                        let configURL = URL(fileURLWithPath: config)
-                        let resolvedConfig = try service.resolveConfig(at: configURL)
-
-                        if let screenID = optionalString("screenId", in: params.arguments) {
-                            report = try service.compileScreenDoc(
-                                screenID: screenID,
-                                configPath: configURL,
-                                outputPath: optionalString("out", in: params.arguments).map {
-                                    resolveFileURL(path: $0, relativeTo: resolvedConfig.projectRoot)
-                                }
-                            )
-                        } else {
-                            let screenDoc = try requiredString("screenDoc", in: params.arguments)
-                            let outputPath = try requiredString("out", in: params.arguments)
-                            report = try service.compileScreenDoc(
-                                documentPath: resolveFileURL(path: screenDoc, relativeTo: resolvedConfig.projectRoot),
-                                outputPath: resolveFileURL(path: outputPath, relativeTo: resolvedConfig.projectRoot)
-                            )
-                        }
-                    } else {
-                        let screenDoc = try requiredString("screenDoc", in: params.arguments)
-                        let outputPath = try requiredString("out", in: params.arguments)
-                        report = try service.compileScreenDoc(
-                            documentPath: URL(fileURLWithPath: screenDoc),
-                            outputPath: URL(fileURLWithPath: outputPath)
-                        )
-                    }
+                case "validate_app":
+                    let report = try service.validateApp(appPath: URL(fileURLWithPath: try requiredString("app", in: params.arguments)))
                     return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
-                case "validate_spec":
-                    let tokens = try requiredString("tokens", in: params.arguments)
-                    let catalog = try requiredString("catalog", in: params.arguments)
-                    let selection = try exclusiveStringPair("spec", "screenDoc", in: params.arguments)
-
-                    let report: ValidationReport
-                    if selection.selectedKey == "screenDoc" {
-                        report = try service.validate(
-                            screenDocPath: URL(fileURLWithPath: selection.value),
-                            tokensDirectory: URL(fileURLWithPath: tokens),
-                            catalogPath: URL(fileURLWithPath: catalog)
-                        )
-                    } else {
-                        report = try service.validate(
-                            specPath: URL(fileURLWithPath: selection.value),
-                            tokensDirectory: URL(fileURLWithPath: tokens),
-                            catalogPath: URL(fileURLWithPath: catalog)
-                        )
-                    }
+                case "validate_flow":
+                    let report = try service.validateFlow(flowPath: URL(fileURLWithPath: try requiredString("flow", in: params.arguments)))
                     return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
-                case "generate_bundle":
-                    let tokens = try requiredString("tokens", in: params.arguments)
-                    let catalog = try requiredString("catalog", in: params.arguments)
-                    let outputDirectory = try requiredString("out", in: params.arguments)
-                    let selection = try exclusiveStringPair("specDir", "screenDocDir", in: params.arguments)
-
-                    let report: GenerateBundleReport
-                    if selection.selectedKey == "screenDocDir" {
-                        report = try service.generateBundle(
-                            screenDocDirectory: URL(fileURLWithPath: selection.value),
-                            tokensDirectory: URL(fileURLWithPath: tokens),
-                            catalogPath: URL(fileURLWithPath: catalog),
-                            outputDirectory: URL(fileURLWithPath: outputDirectory)
-                        )
-                    } else {
-                        report = try service.generateBundle(
-                            specDirectory: URL(fileURLWithPath: selection.value),
-                            tokensDirectory: URL(fileURLWithPath: tokens),
-                            catalogPath: URL(fileURLWithPath: catalog),
-                            outputDirectory: URL(fileURLWithPath: outputDirectory)
-                        )
-                    }
+                case "validate_screen":
+                    let report = try service.validateScreen(screenPath: URL(fileURLWithPath: try requiredString("screen", in: params.arguments)))
                     return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
-                case "generate_screen":
-                    let tokens = try requiredString("tokens", in: params.arguments)
-                    let catalog = try requiredString("catalog", in: params.arguments)
-                    let outputDirectory = try requiredString("out", in: params.arguments)
-                    let selection = try exclusiveStringPair("spec", "screenDoc", in: params.arguments)
-
-                    let report: GenerateReport
-                    if selection.selectedKey == "screenDoc" {
-                        report = try service.generate(
-                            screenDocPath: URL(fileURLWithPath: selection.value),
-                            tokensDirectory: URL(fileURLWithPath: tokens),
-                            catalogPath: URL(fileURLWithPath: catalog),
-                            outputDirectory: URL(fileURLWithPath: outputDirectory)
-                        )
-                    } else {
-                        report = try service.generate(
-                            specPath: URL(fileURLWithPath: selection.value),
-                            tokensDirectory: URL(fileURLWithPath: tokens),
-                            catalogPath: URL(fileURLWithPath: catalog),
-                            outputDirectory: URL(fileURLWithPath: outputDirectory)
-                        )
-                    }
+                case "render_html":
+                    let screen = try requiredString("screen", in: params.arguments)
+                    let outputURL = optionalString("out", in: params.arguments).map { URL(fileURLWithPath: $0) }
+                    let report = try service.renderHTML(
+                        screenPath: URL(fileURLWithPath: screen),
+                        outputDirectory: outputURL
+                    )
+                    return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
+                case "generate_native":
+                    let screen = try requiredString("screen", in: params.arguments)
+                    let platform = try nativePlatform(from: requiredString("platform", in: params.arguments))
+                    let outputURL = optionalString("out", in: params.arguments).map { URL(fileURLWithPath: $0) }
+                    let report = try service.generateNative(
+                        screenPath: URL(fileURLWithPath: screen),
+                        platform: platform,
+                        outputDirectory: outputURL
+                    )
+                    return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
+                case "sync_penpot":
+                    let app = try requiredString("app", in: params.arguments)
+                    let outputURL = optionalString("out", in: params.arguments).map { URL(fileURLWithPath: $0) }
+                    let report = try service.syncPenpot(
+                        appPath: URL(fileURLWithPath: app),
+                        outputDirectory: outputURL
+                    )
+                    return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
+                case "sync_pencil":
+                    let app = try requiredString("app", in: params.arguments)
+                    let outputURL = optionalString("out", in: params.arguments).map { URL(fileURLWithPath: $0) }
+                    let report = try service.syncPencil(
+                        appPath: URL(fileURLWithPath: app),
+                        outputDirectory: outputURL
+                    )
+                    return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
+                case "build_sample_apps":
+                    let app = try requiredString("app", in: params.arguments)
+                    let report = try service.buildSampleApps(
+                        appPath: URL(fileURLWithPath: app)
+                    )
                     return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
                 case "preview_serve":
-                    let directory = try requiredString("dir", in: params.arguments)
-                    let port = try previewPort(in: params.arguments)
-                    let report = try service.previewServe(directory: URL(fileURLWithPath: directory), port: port)
-                    return .init(content: [.text(try service.encodeJSON(report))], isError: false)
-                case "audit_project":
-                    let projectRoot = try requiredString("projectRoot", in: params.arguments)
+                    let report = try service.previewServe(
+                        directory: URL(fileURLWithPath: try requiredString("directory", in: params.arguments)),
+                        port: Int(optionalString("port", in: params.arguments) ?? "4173") ?? 4173
+                    )
+                    return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
+                case "audit":
+                    let projectRoot = optionalString("projectRoot", in: params.arguments) ?? "."
                     let report = try service.audit(projectRoot: URL(fileURLWithPath: projectRoot))
                     return .init(content: [.text(try service.encodeJSON(report))], isError: !report.ok)
                 default:
@@ -247,34 +231,10 @@ public enum DSMCPServerFactory {
         return value
     }
 
-    private static func exclusiveStringPair(_ firstKey: String, _ secondKey: String, in arguments: [String: Value]?) throws -> (selectedKey: String, value: String) {
-        let firstValue = optionalString(firstKey, in: arguments)
-        let secondValue = optionalString(secondKey, in: arguments)
-
-        switch (firstValue, secondValue) {
-        case let (.some(value), nil):
-            return (firstKey, value)
-        case let (nil, .some(value)):
-            return (secondKey, value)
-        default:
-            throw ProjectError.invalidArgument("Use exactly one of \(firstKey) or \(secondKey)")
+    private static func nativePlatform(from raw: String) throws -> Platform {
+        guard let platform = Platform(rawValue: raw), platform != .html else {
+            throw ProjectError.invalidArgument("Unsupported native platform '\(raw)'. Use ios or android.")
         }
-    }
-
-    private static func previewPort(in arguments: [String: Value]?) throws -> Int {
-        guard let raw = optionalString("port", in: arguments) else {
-            return 4173
-        }
-        guard let port = Int(raw) else {
-            throw ProjectError.invalidArgument("Preview port must be an integer: \(raw)")
-        }
-        return port
-    }
-
-    private static func resolveFileURL(path: String, relativeTo base: URL) -> URL {
-        if path.hasPrefix("/") {
-            return URL(fileURLWithPath: path)
-        }
-        return base.appendingPathComponent(path)
+        return platform
     }
 }

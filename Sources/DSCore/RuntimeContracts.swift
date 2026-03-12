@@ -3,50 +3,25 @@ import Foundation
 public struct RuntimeContracts: Codable, Sendable, Equatable {
     public let cliCommands: [String]
     public let mcpTools: [String]
-    public let docSyncCommands: [String]
     public let evidenceKeys: [String]
     public let doctorCapabilities: [String]
     public let doctorToolchains: [String]
-    public let paths: RuntimeContractPaths
     public let exitCodes: RuntimeContractExitCodes
 
     public init(
         cliCommands: [String],
         mcpTools: [String],
-        docSyncCommands: [String],
         evidenceKeys: [String],
         doctorCapabilities: [String],
         doctorToolchains: [String],
-        paths: RuntimeContractPaths,
         exitCodes: RuntimeContractExitCodes
     ) {
         self.cliCommands = cliCommands
         self.mcpTools = mcpTools
-        self.docSyncCommands = docSyncCommands
         self.evidenceKeys = evidenceKeys
         self.doctorCapabilities = doctorCapabilities
         self.doctorToolchains = doctorToolchains
-        self.paths = paths
         self.exitCodes = exitCodes
-    }
-}
-
-public struct RuntimeContractPaths: Codable, Sendable, Equatable {
-    public let governanceFragmentSpec: String
-    public let docSyncManifest: String
-    public let runtimeContractView: String
-    public let governanceContractView: String
-
-    public init(
-        governanceFragmentSpec: String,
-        docSyncManifest: String,
-        runtimeContractView: String,
-        governanceContractView: String
-    ) {
-        self.governanceFragmentSpec = governanceFragmentSpec
-        self.docSyncManifest = docSyncManifest
-        self.runtimeContractView = runtimeContractView
-        self.governanceContractView = governanceContractView
     }
 }
 
@@ -87,16 +62,9 @@ public struct RuntimeContractLoader: Sendable {
         return RuntimeContracts(
             cliCommands: try stringArray(named: "cliCommands", in: text),
             mcpTools: try stringArray(named: "mcpTools", in: text),
-            docSyncCommands: try stringArray(named: "docSyncCommands", in: text),
             evidenceKeys: try stringArray(named: "evidenceKeys", in: text),
             doctorCapabilities: try stringArray(named: "doctorCapabilities", in: text),
             doctorToolchains: try stringArray(named: "doctorToolchains", in: text),
-            paths: RuntimeContractPaths(
-                governanceFragmentSpec: try stringValue(named: "governanceFragmentSpec", inObjectNamed: "paths", from: text),
-                docSyncManifest: try stringValue(named: "docSyncManifest", inObjectNamed: "paths", from: text),
-                runtimeContractView: try stringValue(named: "runtimeContractView", inObjectNamed: "paths", from: text),
-                governanceContractView: try stringValue(named: "governanceContractView", inObjectNamed: "paths", from: text)
-            ),
             exitCodes: RuntimeContractExitCodes(
                 operational: try intValue(named: "operational", inObjectNamed: "exitCodes", from: text),
                 validationFailure: try intValue(named: "validationFailure", inObjectNamed: "exitCodes", from: text),
@@ -114,15 +82,6 @@ public struct RuntimeContractLoader: Sendable {
             throw RuntimeContractError.invalidFormat("Runtime contract array '\(field)' is empty or malformed")
         }
         return values
-    }
-
-    private func stringValue(named field: String, inObjectNamed objectName: String, from text: String) throws -> String {
-        let object = try block(named: objectName, open: "{", close: "}", in: text)
-        let pattern = "\(NSRegularExpression.escapedPattern(for: field)):\\s*\"([^\"]+)\""
-        guard let value = firstCapture(in: object, pattern: pattern) else {
-            throw RuntimeContractError.missingField("\(objectName).\(field)")
-        }
-        return value
     }
 
     private func intValue(named field: String, inObjectNamed objectName: String, from text: String) throws -> Int {

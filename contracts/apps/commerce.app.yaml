@@ -1,0 +1,34 @@
+schemaVersion: "2.1"
+appId: commerce
+title: Commerce Mobile
+description: Deterministic contract set for the commerce checkout app.
+brands:
+  - default
+targetPlatforms:
+  - html
+  - ios
+  - android
+tokenSet: contracts/tokens/theme.light.tokens.json
+componentRegistry: contracts/registry/shadcn/registry.json
+motionSet: contracts/motion/mobile-core.motion.yaml
+reviewSet: contracts/review/mobile-core.review.yaml
+sampleApps:
+  ios: HostApps/ios/CommerceSample
+  android: HostApps/android/CommerceSample
+reviewBenchmarks:
+  - source: mobbin
+    url: https://mobbin.com
+    tags:
+      - checkout
+      - commerce
+      - calm-density
+  - source: refero
+    url: https://refero.design
+    tags:
+      - mobile
+      - purchase-flow
+flows:
+  - id: checkout
+    path: contracts/flows/commerce-checkout.flow.yaml
+  - id: receipts
+    path: contracts/flows/commerce-receipts.flow.yaml

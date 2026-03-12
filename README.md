@@ -1,43 +1,39 @@
 # Mobile Design Automation
 
-이 저장소는 **모바일 네이티브 디자인 자동화 시스템**의 실제 Swift 구현과 문서 계약을 함께 가진 기준 저장소다. `docs/`, `schemas/`, `examples/`, `prompts/`는 source package로 유지하고, 실행 코드는 `Sources/DSCore`, `Sources/DSCLI`, `Sources/DSMCP`, `Sources/DSMCPKit`에 둔다.
+이 저장소는 Swift 6 + SPM 기반의 design-system control plane이다. 공식 방향은 `contracts/*` 를 기준으로 validate, review, native generation, evidence를 닫는 contract-first 운영이다.
 
-핵심 파이프라인은 하나로 고정한다.
+핵심 파이프라인은 아래로 고정한다.
 
 ```text
-screen-doc -> ScreenSpec -> validate -> generate -> SwiftUI / Compose / HTML preview
+contracts/* + schemas/current
+  -> validate
+  -> DesignIR
+  -> PreviewApp review bundle
+  -> SwiftUI / Compose generation
+  -> adapter export
+  -> HostApps runtime proof
+  -> audit evidence
 ```
 
-## 포함 범위
-
-- 최종 아키텍처와 기술 선택
-- source of truth / contract / schema 정의
-- target repo 구조와 module map
-- CLI / MCP / generator / review 정책
-- 실행 계획과 task matrix
-- 품질 게이트, traceability, integrity audit
-- screen-doc, ScreenSpec, token, catalog, config examples
-- agent prompt와 repo-local `AGENTS.md`
+작업 기준 문서는 아래만 읽는다.
 
 ## 권장 읽기 순서
 
 1. [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md)
-2. [00-executive-decision.md](docs/00-executive-decision.md)
-3. [01-goals-non-goals.md](docs/01-goals-non-goals.md)
-4. [02-architecture.md](docs/02-architecture.md)
-5. [03-source-of-truth-and-contracts.md](docs/03-source-of-truth-and-contracts.md)
-6. [04-tech-stack-decision.md](docs/04-tech-stack-decision.md)
-7. [07-cli-and-mcp-spec.md](docs/07-cli-and-mcp-spec.md)
-8. [11-execution-plan.md](docs/11-execution-plan.md)
-9. [12-task-matrix.md](docs/12-task-matrix.md)
-10. [20-traceability-matrix.md](docs/20-traceability-matrix.md)
-11. [21-integrity-audit.md](docs/21-integrity-audit.md)
+2. [0001-authoritative-contracts.md](docs/adr/0001-authoritative-contracts.md)
+3. [PLAN.md](docs/PLAN.md)
+4. [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+5. [RUNBOOK.md](docs/RUNBOOK.md)
+6. [contracts/README.md](contracts/README.md)
+7. [PreviewApp/README.md](PreviewApp/README.md)
+8. [HostApps/README.md](HostApps/README.md)
 
-## 현재 패키지와 목표 상태
+## 현재 저장소 상태
 
-- 실행 코드는 SwiftPM package로 동작한다.
-- 실제 모듈 책임은 [05-repo-structure-and-naming.md](docs/05-repo-structure-and-naming.md), [19-code-module-map.md](docs/19-code-module-map.md)에 정리한다.
-- 구현과 검증은 [11-execution-plan.md](docs/11-execution-plan.md)의 critical path와 [12-task-matrix.md](docs/12-task-matrix.md)의 stable task ID를 기준으로 진행한다.
+- `contracts/*` 와 `schemas/current/*` 가 유일한 입력 계약 루트다.
+- `PreviewApp/*` 는 review/evidence shell 경계다.
+- `HostApps/*` 는 native runtime proof 경계다.
+- generated HTML, native source, adapter payload, sample build output은 disposable artifact다.
 
 ## 빠른 시작
 
@@ -45,49 +41,23 @@ screen-doc -> ScreenSpec -> validate -> generate -> SwiftUI / Compose / HTML pre
 swift build
 swift test
 
-./.build/debug/dsctl validate \
-  --config examples/configs/dsctl.config.json \
-  --screen-id login \
+./.build/debug/dsctl validate-app \
+  --app contracts/apps/commerce.app.yaml \
   --json
 
-./.build/debug/dsctl validate \
-  --config examples/configs/dsctl.config.json \
-  --screen-doc examples/screen-doc/login.md \
+./.build/debug/dsctl render-html \
+  --screen contracts/screens/checkout-payment.screen.yaml \
   --json
 
-./.build/debug/dsctl compile-screen-doc \
-  --config examples/configs/dsctl.config.json \
-  --screen-id login \
-  --json
-
-./.build/debug/dsctl generate \
-  --config examples/configs/dsctl.config.json \
-  --screen-id login \
-  --json
-
-./.build/debug/dsctl generate \
-  --config examples/configs/dsctl.config.json \
-  --screen-doc examples/screen-doc/login.md \
-  --out build/from-screen-doc/login \
-  --json
-
-./.build/debug/dsctl generate-bundle \
-  --config examples/configs/dsctl.config.json \
-  --screen-doc-dir examples/screen-doc \
-  --out build/from-screen-doc/bundle \
-  --json
-
-./.build/debug/ds-doc-sync export-contracts \
-  --project-root . \
-  --json
-
-./.build/debug/ds-doc-sync sync \
-  --project-root . \
+./.build/debug/dsctl build-sample-apps \
+  --app contracts/apps/commerce.app.yaml \
   --json
 ```
 
-`ds-doc-sync sync` 는 `export-contracts -> export-fragments -> render -> verify` 를 순서대로 수행하는 full doc-sync entrypoint 다.
+## 원칙
 
-## 한 줄 정의
-
-이 시스템은 문서를 직접 UI 코드로 번역하는 것이 아니라, 문서를 구조화된 계약(ScreenSpec)으로 정규화한 뒤 결정론적으로 네이티브 UI 코드를 생성하는 시스템이다.
+- authoritative source는 사람이 수정하는 contract와 policy 문서다.
+- generated HTML, SwiftUI, Compose, adapter payload, screenshots, traces, sample build output은 disposable artifact다.
+- HTML은 canonical review surface고, PreviewApp은 source of truth가 아니라 review/evidence shell이다.
+- native proof는 generated source 자체가 아니라 `HostApps/` 경계에서 검증한다.
+- MCP는 thin adapter여야 하며 authority가 되면 안 된다.

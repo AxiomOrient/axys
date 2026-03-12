@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/current/motion-spec.schema.json",
+  "title": "MotionSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "motionSetId",
+    "durations",
+    "easings",
+    "patterns"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "2.1"
+    },
+    "motionSetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "durations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tokenDef"
+      }
+    },
+    "easings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tokenDef"
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/pattern"
+      }
+    }
+  },
+  "$defs": {
+    "tokenDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "pattern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "trigger",
+        "durationToken",
+        "easingToken",
+        "enter",
+        "exit",
+        "reducedMotion"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trigger": {
+          "type": "string",
+          "minLength": 1
+        },
+        "durationToken": {
+          "type": "string",
+          "minLength": 1
+        },
+        "easingToken": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enter": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sharedElementGroup": {
+          "type": "string"
+        },
+        "reducedMotion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

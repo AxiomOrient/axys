@@ -1,0 +1,390 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/current/screen-spec.schema.json",
+  "title": "ScreenSpecV2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "appId",
+    "flowId",
+    "screenId",
+    "title",
+    "route",
+    "targets",
+    "surface",
+    "states",
+    "previewStates",
+    "layout"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "2.1"
+    },
+    "appId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "flowId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "screenId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route": {
+      "type": "string",
+      "pattern": "^\\/\\S*$"
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "html",
+          "ios",
+          "android"
+        ]
+      }
+    },
+    "intent": {
+      "type": "string"
+    },
+    "surface": {
+      "$ref": "#/$defs/surface"
+    },
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "stateFields": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stateField"
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "navigation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/navigation"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "previewStates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/previewState"
+      }
+    },
+    "motion": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/motionRef"
+      }
+    },
+    "reviewChecklist": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "layout": {
+      "$ref": "#/$defs/layoutNode"
+    }
+  },
+  "$defs": {
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backgroundColor",
+        "padding"
+      ],
+      "properties": {
+        "backgroundColor": {
+          "type": "string",
+          "pattern": "^\\{[a-zA-Z0-9._-]+\\}$"
+        },
+        "padding": {
+          "type": "string",
+          "pattern": "^\\{[a-zA-Z0-9._-]+\\}$"
+        }
+      }
+    },
+    "stateField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "string",
+            "boolean",
+            "integer",
+            "number",
+            "enum"
+          ]
+        },
+        "defaultValue": {
+          "$ref": "#/$defs/jsonValue"
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "submit",
+            "local",
+            "network",
+            "optimistic"
+          ]
+        }
+      }
+    },
+    "navigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "route"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "route": {
+          "type": "string",
+          "pattern": "^\\/\\S*$"
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "image",
+            "icon",
+            "video",
+            "lottie"
+          ]
+        }
+      }
+    },
+    "previewState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "motionRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "patternId",
+        "trigger"
+      ],
+      "properties": {
+        "patternId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trigger": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field"
+      ],
+      "properties": {
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "type": "string"
+        },
+        "navigation": {
+          "type": "string"
+        }
+      }
+    },
+    "layoutNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "stack",
+            "grid",
+            "slot",
+            "component",
+            "conditional",
+            "repeat"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "vertical",
+            "horizontal"
+          ]
+        },
+        "spacing": {
+          "type": "string",
+          "pattern": "^\\{[a-zA-Z0-9._-]+\\}$"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "slot": {
+          "type": "string"
+        },
+        "componentId": {
+          "type": "string"
+        },
+        "stateGuard": {
+          "type": "string"
+        },
+        "repeatSource": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/layoutNode"
+          }
+        }
+      }
+    },
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    }
+  }
+}

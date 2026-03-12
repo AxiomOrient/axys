@@ -6,286 +6,6 @@ public enum Platform: String, Codable, CaseIterable, Sendable {
     case html
 }
 
-public struct ScreenSurface: Codable, Sendable {
-    public let backgroundColor: String
-    public let padding: String
-
-    public init(backgroundColor: String, padding: String) {
-        self.backgroundColor = backgroundColor
-        self.padding = padding
-    }
-}
-
-public enum ScreenStateFieldType: String, Codable, Sendable {
-    case string
-    case boolean
-    case integer
-    case number
-}
-
-public struct ScreenStateField: Codable, Sendable {
-    public let id: String
-    public let type: ScreenStateFieldType
-    public let defaultValue: JSONValue?
-
-    public init(id: String, type: ScreenStateFieldType, defaultValue: JSONValue? = nil) {
-        self.id = id
-        self.type = type
-        self.defaultValue = defaultValue
-    }
-}
-
-public struct ScreenAction: Codable, Sendable {
-    public let id: String
-
-    public init(id: String) {
-        self.id = id
-    }
-}
-
-public struct ScreenPreviewState: Codable, Sendable {
-    public let id: String
-    public let values: [String: JSONValue]
-    public let note: String?
-
-    public init(id: String, values: [String: JSONValue] = [:], note: String? = nil) {
-        self.id = id
-        self.values = values
-        self.note = note
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case values
-        case note
-    }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        values = try container.decodeIfPresent([String: JSONValue].self, forKey: .values) ?? [:]
-        note = try container.decodeIfPresent(String.self, forKey: .note)
-    }
-}
-
-public struct ScreenNavigationDestination: Codable, Sendable {
-    public let id: String
-    public let route: String
-
-    public init(id: String, route: String) {
-        self.id = id
-        self.route = route
-    }
-}
-
-public enum ScreenAssetKind: String, Codable, Sendable {
-    case image
-    case icon
-}
-
-public struct ScreenAsset: Codable, Sendable {
-    public let name: String
-    public let kind: ScreenAssetKind
-
-    public init(name: String, kind: ScreenAssetKind) {
-        self.name = name
-        self.kind = kind
-    }
-}
-
-public struct ScreenNode: Codable, Sendable {
-    public let kind: String
-    public let id: String?
-    public let role: String?
-    public let variant: String?
-    public let text: String?
-    public let title: String?
-    public let label: String?
-    public let action: String?
-    public let navigation: String?
-    public let binding: String?
-    public let inputType: String?
-    public let spacing: String?
-    public let assetName: String?
-    public let children: [ScreenNode]?
-
-    public init(
-        kind: String,
-        id: String? = nil,
-        role: String? = nil,
-        variant: String? = nil,
-        text: String? = nil,
-        title: String? = nil,
-        label: String? = nil,
-        action: String? = nil,
-        navigation: String? = nil,
-        binding: String? = nil,
-        inputType: String? = nil,
-        spacing: String? = nil,
-        assetName: String? = nil,
-        children: [ScreenNode]? = nil
-    ) {
-        self.kind = kind
-        self.id = id
-        self.role = role
-        self.variant = variant
-        self.text = text
-        self.title = title
-        self.label = label
-        self.action = action
-        self.navigation = navigation
-        self.binding = binding
-        self.inputType = inputType
-        self.spacing = spacing
-        self.assetName = assetName
-        self.children = children
-    }
-}
-
-public struct ScreenSpec: Codable, Sendable {
-    public let schemaVersion: String
-    public let screenId: String
-    public let title: String
-    public let route: String?
-    public let intent: String?
-    public let constraints: [String]
-    public let states: [String]
-    public let stateFields: [ScreenStateField]
-    public let actions: [ScreenAction]
-    public let assets: [ScreenAsset]
-    public let previewStates: [ScreenPreviewState]
-    public let navigation: [ScreenNavigationDestination]
-    public let platforms: [Platform]
-    public let surface: ScreenSurface
-    public let root: ScreenNode
-
-    public init(
-        schemaVersion: String,
-        screenId: String,
-        title: String,
-        route: String? = nil,
-        intent: String? = nil,
-        constraints: [String] = [],
-        states: [String] = [],
-        stateFields: [ScreenStateField] = [],
-        actions: [ScreenAction] = [],
-        assets: [ScreenAsset] = [],
-        previewStates: [ScreenPreviewState] = [],
-        navigation: [ScreenNavigationDestination] = [],
-        platforms: [Platform],
-        surface: ScreenSurface,
-        root: ScreenNode
-    ) {
-        self.schemaVersion = schemaVersion
-        self.screenId = screenId
-        self.title = title
-        self.route = route
-        self.intent = intent
-        self.constraints = constraints
-        self.states = states
-        self.stateFields = stateFields
-        self.actions = actions
-        self.assets = assets
-        self.previewStates = previewStates
-        self.navigation = navigation
-        self.platforms = platforms
-        self.surface = surface
-        self.root = root
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case schemaVersion
-        case screenId
-        case title
-        case route
-        case intent
-        case constraints
-        case states
-        case stateFields
-        case actions
-        case assets
-        case previewStates
-        case navigation
-        case platforms
-        case surface
-        case root
-    }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        schemaVersion = try container.decode(String.self, forKey: .schemaVersion)
-        screenId = try container.decode(String.self, forKey: .screenId)
-        title = try container.decode(String.self, forKey: .title)
-        route = try container.decodeIfPresent(String.self, forKey: .route)
-        intent = try container.decodeIfPresent(String.self, forKey: .intent)
-        constraints = try container.decodeIfPresent([String].self, forKey: .constraints) ?? []
-        states = try container.decodeIfPresent([String].self, forKey: .states) ?? []
-        stateFields = try container.decodeIfPresent([ScreenStateField].self, forKey: .stateFields) ?? []
-        actions = try container.decodeIfPresent([ScreenAction].self, forKey: .actions) ?? []
-        assets = try container.decodeIfPresent([ScreenAsset].self, forKey: .assets) ?? []
-        previewStates = try container.decodeIfPresent([ScreenPreviewState].self, forKey: .previewStates) ?? []
-        navigation = try container.decodeIfPresent([ScreenNavigationDestination].self, forKey: .navigation) ?? []
-        platforms = try container.decode([Platform].self, forKey: .platforms)
-        surface = try container.decode(ScreenSurface.self, forKey: .surface)
-        root = try container.decode(ScreenNode.self, forKey: .root)
-    }
-}
-
-public struct ComponentDefinition: Codable, Sendable {
-    public let kind: String
-    public let roles: [String]?
-    public let variants: [String]?
-    public let inputTypes: [String]?
-
-    public init(kind: String, roles: [String]? = nil, variants: [String]? = nil, inputTypes: [String]? = nil) {
-        self.kind = kind
-        self.roles = roles
-        self.variants = variants
-        self.inputTypes = inputTypes
-    }
-}
-
-public struct ComponentCatalog: Codable, Sendable {
-    public let schemaVersion: String
-    public let components: [ComponentDefinition]
-
-    public init(schemaVersion: String, components: [ComponentDefinition]) {
-        self.schemaVersion = schemaVersion
-        self.components = components
-    }
-}
-
-public struct DSConfig: Codable, Sendable {
-    public let schemaVersion: String
-    public let projectRoot: String
-    public let screenDocDir: String
-    public let screenSpecDir: String
-    public let tokenDir: String
-    public let catalogPath: String
-    public let buildDir: String
-    public let defaultPlatforms: [Platform]
-
-    public init(
-        schemaVersion: String,
-        projectRoot: String,
-        screenDocDir: String,
-        screenSpecDir: String,
-        tokenDir: String,
-        catalogPath: String,
-        buildDir: String,
-        defaultPlatforms: [Platform]
-    ) {
-        self.schemaVersion = schemaVersion
-        self.projectRoot = projectRoot
-        self.screenDocDir = screenDocDir
-        self.screenSpecDir = screenSpecDir
-        self.tokenDir = tokenDir
-        self.catalogPath = catalogPath
-        self.buildDir = buildDir
-        self.defaultPlatforms = defaultPlatforms
-    }
-}
-
 public struct ResolvedToken: Codable, Sendable, Equatable {
     public let path: String
     public let type: String
@@ -521,60 +241,48 @@ public struct DoctorReport: Codable, Sendable, Equatable {
 }
 
 public struct IntegrityChecks: Codable, Sendable {
-    public let coreFilesExist: Bool
-    public let jsonParse: Bool
+    public let requiredPathsPresent: Bool
     public let schemaValidation: Bool
     public let markdownRelativeLinks: Bool
-    public let docSyncFreshness: Bool
-    public let contractViewFreshness: Bool
+    public let legacyArtifactsAbsent: Bool
     public let contractCrossReference: Bool
     public let docCount: Int
     public let schemaCount: Int
-    public let exampleJSONCount: Int
-    public let promptCount: Int
+    public let contractFileCount: Int
 
     public init(
-        coreFilesExist: Bool,
-        jsonParse: Bool,
+        requiredPathsPresent: Bool,
         schemaValidation: Bool,
         markdownRelativeLinks: Bool,
-        docSyncFreshness: Bool,
-        contractViewFreshness: Bool,
+        legacyArtifactsAbsent: Bool,
         contractCrossReference: Bool,
         docCount: Int,
         schemaCount: Int,
-        exampleJSONCount: Int,
-        promptCount: Int
+        contractFileCount: Int
     ) {
-        self.coreFilesExist = coreFilesExist
-        self.jsonParse = jsonParse
+        self.requiredPathsPresent = requiredPathsPresent
         self.schemaValidation = schemaValidation
         self.markdownRelativeLinks = markdownRelativeLinks
-        self.docSyncFreshness = docSyncFreshness
-        self.contractViewFreshness = contractViewFreshness
+        self.legacyArtifactsAbsent = legacyArtifactsAbsent
         self.contractCrossReference = contractCrossReference
         self.docCount = docCount
         self.schemaCount = schemaCount
-        self.exampleJSONCount = exampleJSONCount
-        self.promptCount = promptCount
+        self.contractFileCount = contractFileCount
     }
 
     private enum CodingKeys: String, CodingKey {
-        case coreFilesExist = "core_files_exist"
-        case jsonParse = "json_parse"
+        case requiredPathsPresent = "required_paths_present"
         case schemaValidation = "schema_validation"
         case markdownRelativeLinks = "markdown_relative_links"
-        case docSyncFreshness = "doc_sync_freshness"
-        case contractViewFreshness = "contract_view_freshness"
+        case legacyArtifactsAbsent = "legacy_artifacts_absent"
         case contractCrossReference = "contract_cross_reference"
         case docCount = "doc_count"
         case schemaCount = "schema_count"
-        case exampleJSONCount = "example_json_count"
-        case promptCount = "prompt_count"
+        case contractFileCount = "contract_file_count"
     }
 }
 
-public struct AuditReport: Codable, Sendable {
+public struct RepoAuditReport: Codable, Sendable {
     public let ok: Bool
     public let checks: IntegrityChecks
     public let errors: [String]
@@ -602,7 +310,7 @@ public struct PreviewServeReport: Codable, Sendable {
     }
 }
 
-public struct V2RenderHTMLReport: Codable, Sendable {
+public struct RenderHTMLReport: Codable, Sendable {
     public let ok: Bool
     public let screenId: String
     public let outputDirectory: String
@@ -624,7 +332,7 @@ public struct V2RenderHTMLReport: Codable, Sendable {
     }
 }
 
-public struct V2GenerateNativeReport: Codable, Sendable {
+public struct GenerateNativeReport: Codable, Sendable {
     public let ok: Bool
     public let platform: Platform
     public let screenId: String
@@ -649,12 +357,12 @@ public struct V2GenerateNativeReport: Codable, Sendable {
     }
 }
 
-public enum V2AdapterKind: String, Codable, Sendable {
+public enum AdapterKind: String, Codable, Sendable {
     case penpot
     case pencil
 }
 
-public struct V2AdapterFlowSyncReport: Codable, Sendable {
+public struct AdapterFlowSyncReport: Codable, Sendable {
     public let flowId: String
     public let payloadPath: String
     public let screenIds: [String]
@@ -666,24 +374,24 @@ public struct V2AdapterFlowSyncReport: Codable, Sendable {
     }
 }
 
-public struct V2AdapterSyncReport: Codable, Sendable {
+public struct AdapterSyncReport: Codable, Sendable {
     public let ok: Bool
-    public let adapter: V2AdapterKind
+    public let adapter: AdapterKind
     public let appId: String
     public let outputDirectory: String
     public let manifestPath: String
     public let tokenPayloadPath: String
-    public let flows: [V2AdapterFlowSyncReport]
+    public let flows: [AdapterFlowSyncReport]
     public let artifacts: [GeneratedArtifact]
 
     public init(
         ok: Bool,
-        adapter: V2AdapterKind,
+        adapter: AdapterKind,
         appId: String,
         outputDirectory: String,
         manifestPath: String,
         tokenPayloadPath: String,
-        flows: [V2AdapterFlowSyncReport],
+        flows: [AdapterFlowSyncReport],
         artifacts: [GeneratedArtifact]
     ) {
         self.ok = ok
@@ -697,7 +405,7 @@ public struct V2AdapterSyncReport: Codable, Sendable {
     }
 }
 
-public struct V2SampleAppScreenBuildReport: Codable, Sendable {
+public struct SampleAppScreenBuildReport: Codable, Sendable {
     public let screenId: String
     public let outputDirectory: String
     public let wrapperPath: String
@@ -719,39 +427,39 @@ public struct V2SampleAppScreenBuildReport: Codable, Sendable {
     }
 }
 
-public struct V2SampleAppPlatformBuildReport: Codable, Sendable {
+public struct SampleAppPlatformBuildReport: Codable, Sendable {
     public let platform: Platform
     public let sampleAppPath: String
-    public let screens: [V2SampleAppScreenBuildReport]
+    public let screens: [SampleAppScreenBuildReport]
 
-    public init(platform: Platform, sampleAppPath: String, screens: [V2SampleAppScreenBuildReport]) {
+    public init(platform: Platform, sampleAppPath: String, screens: [SampleAppScreenBuildReport]) {
         self.platform = platform
         self.sampleAppPath = sampleAppPath
         self.screens = screens.sorted { $0.screenId < $1.screenId }
     }
 }
 
-public struct V2BuildSampleAppsReport: Codable, Sendable {
+public struct SampleAppsBuildReport: Codable, Sendable {
     public let ok: Bool
     public let appId: String
-    public let platforms: [V2SampleAppPlatformBuildReport]
+    public let platforms: [SampleAppPlatformBuildReport]
 
-    public init(ok: Bool, appId: String, platforms: [V2SampleAppPlatformBuildReport]) {
+    public init(ok: Bool, appId: String, platforms: [SampleAppPlatformBuildReport]) {
         self.ok = ok
         self.appId = appId
         self.platforms = platforms.sorted { $0.platform.rawValue < $1.platform.rawValue }
     }
 }
 
-public struct V2AuditReport: Codable, Sendable {
+public struct AppAuditReport: Codable, Sendable {
     public let ok: Bool
     public let appId: String
     public let outputDirectory: String
     public let validationReportPath: String
-    public let htmlScreens: [V2RenderHTMLReport]
-    public let penpotSync: V2AdapterSyncReport
-    public let pencilSync: V2AdapterSyncReport
-    public let sampleApps: V2BuildSampleAppsReport
+    public let htmlScreens: [RenderHTMLReport]
+    public let penpotSync: AdapterSyncReport
+    public let pencilSync: AdapterSyncReport
+    public let sampleApps: SampleAppsBuildReport
     public let sampleAppsReportPath: String
     public let artifacts: [GeneratedArtifact]
 
@@ -760,10 +468,10 @@ public struct V2AuditReport: Codable, Sendable {
         appId: String,
         outputDirectory: String,
         validationReportPath: String,
-        htmlScreens: [V2RenderHTMLReport],
-        penpotSync: V2AdapterSyncReport,
-        pencilSync: V2AdapterSyncReport,
-        sampleApps: V2BuildSampleAppsReport,
+        htmlScreens: [RenderHTMLReport],
+        penpotSync: AdapterSyncReport,
+        pencilSync: AdapterSyncReport,
+        sampleApps: SampleAppsBuildReport,
         sampleAppsReportPath: String,
         artifacts: [GeneratedArtifact]
     ) {
@@ -796,7 +504,7 @@ public enum ProjectError: Error, LocalizedError {
     case compileFailed(String)
     case validationFailed(ValidationReport)
     case generationFailed(String)
-    case auditFailed(AuditReport)
+    case auditFailed(RepoAuditReport)
 
     public var errorDescription: String? {
         switch self {

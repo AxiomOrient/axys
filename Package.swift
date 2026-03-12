@@ -9,9 +9,7 @@ let package = Package(
     ],
     products: [
         .library(name: "DSCore", targets: ["DSCore"]),
-        .library(name: "DSDocSyncKit", targets: ["DSDocSyncKit"]),
         .executable(name: "dsctl", targets: ["DSCLI"]),
-        .executable(name: "ds-doc-sync", targets: ["DSDocSync"]),
         .executable(name: "ds-mcp", targets: ["DSMCP"]),
     ],
     dependencies: [
@@ -24,11 +22,9 @@ let package = Package(
         .target(
             name: "DSCore",
             dependencies: [
-                "DSDocSyncKit",
                 .product(name: "Yams", package: "Yams"),
             ]
         ),
-        .target(name: "DSDocSyncKit"),
         .target(
             name: "DSMCPKit",
             dependencies: [
@@ -40,14 +36,6 @@ let package = Package(
             name: "DSCLI",
             dependencies: [
                 "DSCore",
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ]
-        ),
-        .executableTarget(
-            name: "DSDocSync",
-            dependencies: [
-                "DSCore",
-                "DSDocSyncKit",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
@@ -77,14 +65,6 @@ let package = Package(
             name: "DSCLITests",
             dependencies: [
                 "DSCore",
-                .product(name: "Testing", package: "swift-testing"),
-            ]
-        ),
-        .testTarget(
-            name: "DSDocSyncKitTests",
-            dependencies: [
-                "DSCore",
-                "DSDocSyncKit",
                 .product(name: "Testing", package: "swift-testing"),
             ]
         ),

@@ -2,44 +2,39 @@ package runtime
 
 cliCommands: [
     "doctor",
-    "compile-screen-doc",
-    "validate",
-    "generate",
-    "generate-bundle",
+    "validate-app",
+    "validate-flow",
+    "validate-screen",
+    "render-html",
+    "generate-native",
+    "sync-penpot",
+    "sync-pencil",
+    "build-sample-apps",
     "preview-serve",
     "audit",
-    "v2",
 ]
 
 mcpTools: [
     "doctor",
-    "compile_screen_doc",
-    "validate_spec",
-    "generate_screen",
-    "generate_bundle",
+    "validate_app",
+    "validate_flow",
+    "validate_screen",
+    "render_html",
+    "generate_native",
+    "sync_penpot",
+    "sync_pencil",
+    "build_sample_apps",
     "preview_serve",
-    "audit_project",
-]
-
-docSyncCommands: [
-    "sync",
-    "export-contracts",
-    "export-fragments",
-    "render",
-    "verify",
+    "audit",
 ]
 
 evidenceKeys: [
     "swift_test",
     "cli_smoke",
     "mcp_smoke",
-    "docsync_sync",
-    "docsync_verify",
     "audit_json",
     "doctor_report",
-    "integration_smoke",
-    "acceptance_report",
-    "reread_checklist",
+    "preview_smoke",
 ]
 
 doctorCapabilities: [
@@ -60,13 +55,6 @@ doctorToolchains: [
     "kotlinc",
     "gradle",
 ]
-
-paths: {
-    governanceFragmentSpec: "meta/views/governance.fragments.json",
-    docSyncManifest: "meta/views/docsync.manifest.json",
-    runtimeContractView: "meta/views/runtime.contracts.json",
-    governanceContractView: "meta/views/governance.contracts.json",
-}
 
 exitCodes: {
     operational: 1,
