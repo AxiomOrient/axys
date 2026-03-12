@@ -1,0 +1,61 @@
+schemaVersion: "2.1"
+appId: commerce
+flowId: receipts
+screenId: receipt-summary
+title: Receipt Summary
+route: /receipt/summary
+targets:
+  - html
+  - ios
+  - android
+intent: Confirm the completed purchase and keep the next action obvious.
+surface:
+  backgroundColor: "{color.surface.canvas}"
+  padding: "{space.screen.inset}"
+states:
+  - default
+  - success
+actions:
+  - id: view-order
+    kind: navigation
+navigation:
+  - id: back-to-home
+    route: /home
+previewStates:
+  - id: default
+    note: Fresh receipt after a successful payment.
+  - id: success
+    note: Order is confirmed and ready for follow-up actions.
+motion:
+  - patternId: screen-slide-in
+    trigger: screen-enter
+reviewChecklist:
+  - structure.primary_intent
+  - semantics.cta_clarity
+  - tokens.alias_only
+  - native-viability.single_primary_cta
+layout:
+  kind: stack
+  id: receipt-summary-root
+  direction: vertical
+  spacing: "{space.stack.lg}"
+  children:
+    - kind: component
+      id: receipt-shell
+      componentId: top-app-bar
+      props:
+        title: Order confirmed
+        subtitle: Your receipt is ready to review
+    - kind: component
+      id: receipt-card
+      componentId: checkout-summary
+      props:
+        itemCount: "3 items"
+        totalText: "$124.00"
+        secondaryText: Delivery arrives tomorrow
+    - kind: component
+      id: receipt-cta
+      componentId: button
+      props:
+        label: View order
+        variant: primary

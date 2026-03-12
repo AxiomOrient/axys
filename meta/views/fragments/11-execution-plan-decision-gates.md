@@ -1,0 +1,9 @@
+| Gate | Check | Pass condition | On fail |
+|---|---|---|---|
+| G1 Final contract gate | target schema/model covers the supported core screens without heuristic placeholders | docs, schema, and examples can express `login` and `product-detail` states/actions/navigation/assets explicitly | stop generator expansion and finish the contract model first |
+| G2 Authoring gate | `screen-doc` to starter-spec path is deterministic and completion rules are explicit | `compile-screen-doc` emits starter spec + completion report and unresolved items cannot reach generation | keep compile/report work in front of validator/generator until authoring gaps are sealed |
+| G3 Semantic validation gate | validator blocks unresolved or ambiguous semantics before code generation | incomplete specs fail with actionable errors and complete specs validate cleanly | extend validation before adding more renderer behavior |
+| G4 Generator and review gate | enriched contract renders consistently across SwiftUI / Compose / HTML | preview states, actions, navigation labels, and media primitives are preserved across all outputs | hold host integration until platform parity is proven |
+| G5 Integration gate | generated state/action/navigation adapters connect to host code without editing generated files | iOS / Android smoke integration compiles using generated adapters only | fix integration packaging before claiming completion |
+| G6 Governance gate | runtime/governance/docs/audit all reflect the expanded contract and evidence set | `ds-doc-sync`, `audit`, and authoritative-source annex docs stay fresh with new evidence keys and inventories | freeze release until source-of-truth and evidence converge |
+| G7 Acceptance gate | two canonical slices prove the product is complete for core scope | `login` and `product-detail` pass compile, validate, generate, review, integrate, and verification evidence gates | keep remaining tasks open and do not claim final completion |

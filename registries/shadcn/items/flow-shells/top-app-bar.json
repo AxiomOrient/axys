@@ -1,0 +1,41 @@
+{
+  "id": "top-app-bar",
+  "kind": "flow-shell",
+  "allowedProps": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "subtitle",
+      "type": "string"
+    }
+  ],
+  "slots": [
+    {
+      "name": "trailing"
+    }
+  ],
+  "web": {
+    "source": "private-shadcn-registry",
+    "importPath": "@/registry/flow-shells/top-app-bar",
+    "exportName": "TopAppBar"
+  },
+  "native": {
+    "ios": {
+      "component": "AXYSTopAppBar",
+      "props": {
+        "title": "title",
+        "subtitle": "subtitle"
+      }
+    },
+    "android": {
+      "component": "AxysTopAppBar",
+      "props": {
+        "title": "title",
+        "subtitle": "subtitle"
+      }
+    }
+  }
+}

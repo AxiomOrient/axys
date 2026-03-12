@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "1.0",
+  "screenId": "product-detail",
+  "title": "Product Detail",
+  "route": "/products/studio-chair",
+  "intent": "focused product summary with one purchase action",
+  "constraints": [
+    "one clear information hierarchy",
+    "one primary CTA",
+    "semantic tokens only"
+  ],
+  "states": [
+    "default"
+  ],
+  "actions": [
+    {
+      "id": "addToCart"
+    }
+  ],
+  "assets": [
+    {
+      "name": "studio-chair.png",
+      "kind": "image"
+    }
+  ],
+  "previewStates": [
+    {
+      "id": "default",
+      "note": "Default purchase review state."
+    }
+  ],
+  "navigation": [
+    {
+      "id": "shippingDetails",
+      "route": "/products/studio-chair/shipping"
+    }
+  ],
+  "platforms": [
+    "ios",
+    "android",
+    "html"
+  ],
+  "surface": {
+    "backgroundColor": "{color.surface.primary}",
+    "padding": "{space.6}"
+  },
+  "root": {
+    "kind": "vstack",
+    "spacing": "{space.4}",
+    "children": [
+      {
+        "kind": "image",
+        "assetName": "studio-chair.png"
+      },
+      {
+        "kind": "text",
+        "role": "title",
+        "text": "Studio Chair"
+      },
+      {
+        "kind": "text",
+        "role": "body",
+        "text": "A quiet profile, durable materials, and a compact footprint."
+      },
+      {
+        "kind": "card",
+        "spacing": "{space.2}",
+        "children": [
+          {
+            "kind": "text",
+            "role": "label",
+            "text": "Price"
+          },
+          {
+            "kind": "text",
+            "role": "body",
+            "text": "$240"
+          },
+          {
+            "kind": "text",
+            "role": "caption",
+            "text": "Delivery included."
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "variant": "primary",
+        "title": "Add to cart",
+        "action": "addToCart"
+      },
+      {
+        "kind": "button",
+        "variant": "secondary",
+        "title": "Shipping details",
+        "navigation": "shippingDetails"
+      }
+    ]
+  }
+}

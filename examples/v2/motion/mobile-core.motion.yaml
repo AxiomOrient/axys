@@ -1,0 +1,27 @@
+schemaVersion: "2.1"
+motionSetId: mobile-core
+durations:
+  - id: duration.fast
+    value: 160ms
+  - id: duration.normal
+    value: 240ms
+easings:
+  - id: easing.standard
+    value: cubic-bezier(0.2, 0.0, 0.0, 1.0)
+  - id: easing.exit
+    value: cubic-bezier(0.4, 0.0, 1.0, 1.0)
+patterns:
+  - id: screen-slide-in
+    trigger: screen-enter
+    durationToken: duration.normal
+    easingToken: easing.standard
+    enter: translateY(16px)+fade-in
+    exit: translateY(8px)+fade-out
+    reducedMotion: fade-in
+  - id: cta-progress
+    trigger: submit-payment
+    durationToken: duration.fast
+    easingToken: easing.standard
+    enter: progress-pulse
+    exit: progress-stop
+    reducedMotion: opacity-shift

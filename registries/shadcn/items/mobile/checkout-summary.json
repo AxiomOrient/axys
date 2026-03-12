@@ -1,0 +1,43 @@
+{
+  "id": "checkout-summary",
+  "kind": "mobile",
+  "allowedProps": [
+    {
+      "name": "itemCount",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "totalText",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "secondaryText",
+      "type": "string"
+    }
+  ],
+  "web": {
+    "source": "private-shadcn-registry",
+    "importPath": "@/registry/mobile/checkout-summary",
+    "exportName": "CheckoutSummary"
+  },
+  "native": {
+    "ios": {
+      "component": "AXYSCheckoutSummaryCard",
+      "props": {
+        "itemCount": "itemCountText",
+        "totalText": "totalText",
+        "secondaryText": "caption"
+      }
+    },
+    "android": {
+      "component": "AxysCheckoutSummaryCard",
+      "props": {
+        "itemCount": "itemCountText",
+        "totalText": "totalText",
+        "secondaryText": "caption"
+      }
+    }
+  }
+}

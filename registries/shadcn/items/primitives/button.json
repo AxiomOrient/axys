@@ -1,0 +1,45 @@
+{
+  "id": "button",
+  "kind": "primitive",
+  "allowedProps": [
+    {
+      "name": "label",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "variant",
+      "type": "enum",
+      "allowedValues": [
+        "primary",
+        "secondary",
+        "quiet"
+      ]
+    }
+  ],
+  "motionSlots": [
+    "press",
+    "progress"
+  ],
+  "web": {
+    "source": "private-shadcn-registry",
+    "importPath": "@/registry/primitives/button",
+    "exportName": "Button"
+  },
+  "native": {
+    "ios": {
+      "component": "AXYSPrimaryButton",
+      "props": {
+        "label": "title",
+        "variant": "style"
+      }
+    },
+    "android": {
+      "component": "AxysPrimaryButton",
+      "props": {
+        "label": "label",
+        "variant": "style"
+      }
+    }
+  }
+}

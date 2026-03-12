@@ -1,0 +1,10 @@
+{
+  "color": {
+    "background": {
+      "app": {
+        "$type": "color",
+        "$value": "{color.surface.primary}"
+      }
+    }
+  }
+}

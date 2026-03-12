@@ -1,0 +1,80 @@
+{
+  "color": {
+    "surface": {
+      "primary": {
+        "$type": "color",
+        "$value": "#FFFFFF"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#F6F6F6"
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "#111111"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#666666"
+      },
+      "on": {
+        "action": {
+          "$type": "color",
+          "$value": "#FFFFFF"
+        }
+      }
+    },
+    "action": {
+      "primary": {
+        "$type": "color",
+        "$value": "#111111"
+      }
+    }
+  },
+  "space": {
+    "2": {
+      "$type": "dimension",
+      "$value": "8"
+    },
+    "4": {
+      "$type": "dimension",
+      "$value": "16"
+    },
+    "6": {
+      "$type": "dimension",
+      "$value": "24"
+    },
+    "8": {
+      "$type": "dimension",
+      "$value": "32"
+    }
+  },
+  "radius": {
+    "card": {
+      "$type": "dimension",
+      "$value": "16"
+    }
+  },
+  "font": {
+    "size": {
+      "title": {
+        "$type": "dimension",
+        "$value": "28"
+      },
+      "body": {
+        "$type": "dimension",
+        "$value": "17"
+      },
+      "caption": {
+        "$type": "dimension",
+        "$value": "13"
+      },
+      "label": {
+        "$type": "dimension",
+        "$value": "15"
+      }
+    }
+  }
+}
