@@ -1,0 +1,22 @@
+{
+  "checks" : {
+    "contract_cross_reference" : true,
+    "contract_view_freshness" : true,
+    "core_files_exist" : true,
+    "doc_count" : 26,
+    "doc_sync_freshness" : true,
+    "example_json_count" : 6,
+    "json_parse" : true,
+    "markdown_relative_links" : true,
+    "prompt_count" : 2,
+    "schema_count" : 3,
+    "schema_validation" : true
+  },
+  "errors" : [
+
+  ],
+  "ok" : true,
+  "warnings" : [
+
+  ]
+}

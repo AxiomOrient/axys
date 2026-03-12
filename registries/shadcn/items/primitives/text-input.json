@@ -1,0 +1,47 @@
+{
+  "id": "text-input",
+  "kind": "primitive",
+  "allowedProps": [
+    {
+      "name": "label",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "name": "keyboard",
+      "type": "enum",
+      "allowedValues": [
+        "default",
+        "phone",
+        "email"
+      ]
+    }
+  ],
+  "web": {
+    "source": "private-shadcn-registry",
+    "importPath": "@/registry/primitives/text-input",
+    "exportName": "TextInput"
+  },
+  "native": {
+    "ios": {
+      "component": "AXYSTextField",
+      "props": {
+        "label": "label",
+        "placeholder": "placeholder",
+        "keyboard": "keyboardType"
+      }
+    },
+    "android": {
+      "component": "AxysTextField",
+      "props": {
+        "label": "label",
+        "placeholder": "placeholder",
+        "keyboard": "keyboardType"
+      }
+    }
+  }
+}

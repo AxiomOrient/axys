@@ -1,0 +1,22 @@
+{
+  "artifactId": "ios_host_smoke",
+  "artifactType": "integration_smoke",
+  "platform": "ios",
+  "status": "pass",
+  "verifiedOn": "2026-03-11",
+  "requiredCapability": "ios_host_smoke",
+  "doctorEvidence": "audit/evidence/runtime/doctor.json",
+  "wrapperSources": [
+    "integration/ios/LoginHostScreen.swift",
+    "integration/ios/ProductDetailHostScreen.swift"
+  ],
+  "verification": {
+    "command": "swift test",
+    "testCase": "ios host smoke wrappers typecheck generated login and product-detail screens",
+    "testSource": "Tests/DSCoreTests/ProjectServiceTests.swift:1771"
+  },
+  "notes": [
+    "The repository smoke path distills freshly generated SwiftUI screens and typechecks the host wrapper surface with swiftc -typecheck.",
+    "Generated files remain disposable; the host wrappers own the integration boundary."
+  ]
+}

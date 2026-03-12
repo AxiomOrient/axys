@@ -1,0 +1,143 @@
+{
+  "fragments": [
+    {
+      "path": "meta/views/fragments/11-execution-plan-critical-path.md",
+      "kind": "markdown_table",
+      "headers": ["Phase", "Status", "Objective", "Depends On", "Exit evidence"],
+      "rows": [
+        ["P0", "Done", "baseline runtime, generator, doc-sync, and audit path is re-verified", "none", "`swift test`, `ds-doc-sync sync`, `dsctl audit`, and `dsctl generate --config ... --screen-id login` succeed on the checked-in baseline"],
+        ["P1", "Done", "final-completion planning package and authoritative-source annexes are defined", "P0", "`11`, `12`, `20`, `23`, `24`, and `25` describe the final core delivery target, not only the baseline"],
+        ["P2", "Done", "authoring contract and ScreenSpec model are expanded for core interactive screens", "P1", "schema, models, docs, and examples express state, action, navigation, asset, and preview semantics explicitly"],
+        ["P3", "Done", "screen-doc compiler and validator close the starter-spec to complete-spec path", "P2", "`compile-screen-doc` emits completion-guided output and incomplete specs fail before generation"],
+        ["P4", "Done", "generators and HTML review support enriched contract semantics end-to-end", "P2, P3", "SwiftUI, Compose, and HTML artifacts preserve the same meaning across preview states and interactions"],
+        ["P5", "Done", "iOS and Android host integration adapters compile against generated outputs", "P4", "generated adapters wire to host smoke projects without hand-editing generated files"],
+        ["P6", "Done", "runtime/governance/doc-sync/audit cover the expanded contract and evidence set", "P2, P3, P4, P5", "contract views, fragments, manifests, audit checks, and annex docs all reflect the final core workflow"],
+        ["P7", "Done", "login and product-detail pass the full delivery contract", "P3, P4, P5, P6", "both slices pass compile, validate, generate, review, integrate, and verification evidence gates"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/11-execution-plan-decision-gates.md",
+      "kind": "markdown_table",
+      "headers": ["Gate", "Check", "Pass condition", "On fail"],
+      "rows": [
+        ["G1 Final contract gate", "target schema/model covers the supported core screens without heuristic placeholders", "docs, schema, and examples can express `login` and `product-detail` states/actions/navigation/assets explicitly", "stop generator expansion and finish the contract model first"],
+        ["G2 Authoring gate", "`screen-doc` to starter-spec path is deterministic and completion rules are explicit", "`compile-screen-doc` emits starter spec + completion report and unresolved items cannot reach generation", "keep compile/report work in front of validator/generator until authoring gaps are sealed"],
+        ["G3 Semantic validation gate", "validator blocks unresolved or ambiguous semantics before code generation", "incomplete specs fail with actionable errors and complete specs validate cleanly", "extend validation before adding more renderer behavior"],
+        ["G4 Generator and review gate", "enriched contract renders consistently across SwiftUI / Compose / HTML", "preview states, actions, navigation labels, and media primitives are preserved across all outputs", "hold host integration until platform parity is proven"],
+        ["G5 Integration gate", "generated state/action/navigation adapters connect to host code without editing generated files", "iOS / Android smoke integration compiles using generated adapters only", "fix integration packaging before claiming completion"],
+        ["G6 Governance gate", "runtime/governance/docs/audit all reflect the expanded contract and evidence set", "`ds-doc-sync`, `audit`, and authoritative-source annex docs stay fresh with new evidence keys and inventories", "freeze release until source-of-truth and evidence converge"],
+        ["G7 Acceptance gate", "two canonical slices prove the product is complete for core scope", "`login` and `product-detail` pass compile, validate, generate, review, integrate, and verification evidence gates", "keep remaining tasks open and do not claim final completion"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/11-execution-plan-verification-map.md",
+      "kind": "markdown_table",
+      "headers": ["Workstream", "Verification", "Expected signal"],
+      "rows": [
+        ["Planning/docs alignment", "reread `MASTER_BLUEPRINT`, `11`, `12`, `18`, `20`, `23`, `24`, and `25` together", "one overall plan and one authoritative-source annex structure are visible without conflicting authority"],
+        ["Authoring contract", "schema/example updates, `compile-screen-doc` report tests, and source-of-truth reread", "starter-spec path is explicit and no silent heuristic output is treated as final"],
+        ["Semantic validation", "positive/negative validation tests for state/action/binding/route/asset/token/catalog rules", "incomplete specs fail early and complete specs pass cleanly"],
+        ["Multi-platform generation", "SwiftUI / Compose / HTML golden tests and manifest/report diff checks", "all three outputs preserve the same contract semantics deterministically"],
+        ["HTML review", "generated preview bundle inspection across declared preview states", "every declared preview state is visible and reviewable in HTML"],
+        ["Host integration", "iOS/Android smoke integration, compile-backed host smoke tests, and adapter compile checks", "generated adapters link to host code without hand edits to generated files"],
+        ["Governance and audit", "`ds-doc-sync sync`, contract export checks, and `dsctl audit`", "contract views, fragments, generated docs, and evidence refs remain fresh and aligned"],
+        ["Vertical slice acceptance", "end-to-end runs for `login` and `product-detail`", "both slices satisfy compile, validate, generate, review, integrate, and audit gates"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/ownership-boundary-table.md",
+      "kind": "markdown_table",
+      "headers": ["Layer", "Owns", "Must not own"],
+      "rows": [
+        ["authoring contract roots", "`ScreenSpec` schema, component catalog/config schema, example inputs, authoring semantics, completion-report rules", "exit codes, audit evidence registry, phase/task sequencing"],
+        ["runtime root", "CLI command, MCP tool, input contract, output path, exit code, evidence key", "task priority, decision gate prose, roadmap sequencing"],
+        ["governance root", "generated-doc inventory, authoritative-source inventory, evidence references, runtime/planning/integration/acceptance artifact registry", "renderer behavior, task rows, schema field definitions"],
+        ["planning view source", "execution-plan rows, task rows, decision gates, traceability rows, annex structure", "runtime command truth, schema semantics, generator algorithms"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/12-task-matrix-task-rows.md",
+      "kind": "markdown_table",
+      "headers": ["Task ID", "Status", "Priority", "Action", "Depends On", "Done when", "Evidence required"],
+      "rows": [
+        ["BASE-01", "Done", "P0", "runtime, generator, CLI, MCP, doc-sync, audit baseline을 fresh evidence로 다시 고정한다", "none", "현재 baseline path가 명령과 테스트로 다시 확인된다", "`swift test`, `ds-doc-sync sync`, `dsctl audit`, `dsctl generate` output"],
+        ["PLAN-01", "Done", "P0", "active planning package를 final core completion 기준으로 재작성한다", "BASE-01", "`11`, `12`, `20`, `23`, `24`, `25`, `18`, `MASTER_BLUEPRINT` 가 final target과 baseline을 함께 설명한다", "updated docs, fragment export, reread checklist"],
+        ["MODEL-01", "Done", "P0", "`ScreenSpec` schema/model을 core interactive screen에 맞게 확장한다", "PLAN-01", "상태, 액션, 네비게이션, asset, preview state, binding contract가 explicit field로 정의된다", "schema diff, model tests, updated examples"],
+        ["DOC-01", "Done", "P1", "`03`, `06`, `08`, `17` 과 example specs/docs를 final contract 기준으로 승격한다", "MODEL-01", "source-of-truth, data model, generation, integration docs가 확장된 contract와 충돌하지 않는다", "updated docs, example diff, link scan"],
+        ["AUTHOR-01", "Done", "P0", "`compile-screen-doc` 를 starter spec + completion report path로 재정의한다", "MODEL-01", "authoring output이 deterministic하고 unresolved item이 명시적으로 보고된다", "compile tests, starter-spec snapshots, report schema"],
+        ["AUTHOR-02", "Done", "P1", "`login`, `product-detail` screen-doc에 필요한 structured section과 deterministic mapping을 닫는다", "AUTHOR-01", "두 example 모두 completion report 기준으로 authoritative spec 완성이 가능하다", "example docs, compile snapshots, acceptance checklist"],
+        ["VALIDATE-01", "Done", "P0", "validator가 unresolved, state/action/binding/route/asset/token/catalog completeness를 강제한다", "MODEL-01, AUTHOR-01", "incomplete spec은 fail하고 complete spec은 clean pass 한다", "validator tests, negative fixtures, JSON reports"],
+        ["GENERATE-01", "Done", "P0", "SwiftUI / Compose / HTML generator를 explicit state/action/navigation/media semantics로 확장한다", "MODEL-01, VALIDATE-01", "세 플랫폼 출력이 같은 contract 의미를 유지한다", "golden tests, generated artifacts, manifest diff"],
+        ["REVIEW-01", "Done", "P1", "HTML review bundle에 preview state coverage와 review signal을 추가한다", "GENERATE-01", "declared preview state 전체가 HTML에서 review 가능하다", "generated preview bundle, review checklist"],
+        ["INTEGRATE-01", "Done", "P1", "iOS host integration pack과 smoke path를 만든다", "GENERATE-01", "generated state/action/navigation adapter가 host app에서 compile-backed smoke로 검증된다", "host compile log, compile-backed smoke tests, integration guide update"],
+        ["INTEGRATE-02", "Done", "P1", "Android host integration pack과 smoke path를 만든다", "GENERATE-01", "generated state/action/navigation adapter가 host app에서 compile-backed smoke로 검증된다", "host compile log, compile-backed smoke tests, integration guide update"],
+        ["GOV-01", "Done", "P0", "runtime/governance contracts, doc-sync manifest, audit evidence를 final core workflow 기준으로 확장한다", "MODEL-01, AUTHOR-01, VALIDATE-01, GENERATE-01", "expanded contract/evidence set이 source-owned view와 audit check에 반영된다", "contract view export, audit JSON, manifest diff"],
+        ["ASOT-01", "Done", "P1", "authoritative-source annex(`24`, `25`)와 master ledger 사이의 workstream sync를 닫는다", "GOV-01", "annex task와 master task가 같은 source/evidence 경로를 가리킨다", "annex docs, traceability rows, reread checklist"],
+        ["E2E-01", "Done", "P0", "`login` 최종 acceptance path를 닫는다", "AUTHOR-02, VALIDATE-01, GENERATE-01, REVIEW-01, INTEGRATE-01, INTEGRATE-02", "default/loading/error, field binding, submit action, review/integration evidence가 모두 통과한다", "login acceptance report, generated artifacts, host smoke"],
+        ["E2E-02", "Done", "P0", "`product-detail` 최종 acceptance path를 닫는다", "AUTHOR-02, VALIDATE-01, GENERATE-01, REVIEW-01, INTEGRATE-01, INTEGRATE-02", "media/card/content/CTA/navigation or purchase flow가 review/integration evidence와 함께 통과한다", "product-detail acceptance report, generated artifacts, host smoke"],
+        ["VERIFY-01", "Done", "P0", "최종 completion evidence suite를 다시 통과시킨다", "DOC-01, GOV-01, ASOT-01, E2E-01, E2E-02", "tests, doc-sync, audit, generation, host smoke, docs evidence가 모두 fresh 하다", "fresh command outputs, integration smoke logs, audit JSON"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/12-task-matrix-decision-gates.md",
+      "kind": "markdown_table",
+      "headers": ["Gate", "Trigger tasks", "Pass condition", "On fail"],
+      "rows": [
+        ["DG-01 Final contract", "MODEL-01, AUTHOR-01", "authoring contract와 `ScreenSpec` model이 core screens를 explicit하게 담는다", "schema/model부터 다시 닫는다"],
+        ["DG-02 Authoring completeness", "AUTHOR-02, VALIDATE-01", "starter-spec path가 deterministic하고 unresolved item은 generation 전에 모두 차단된다", "compile/report/validator를 먼저 고친다"],
+        ["DG-03 Generator parity", "GENERATE-01, REVIEW-01", "SwiftUI / Compose / HTML이 같은 의미를 유지하고 preview state review가 가능하다", "platform parity를 닫기 전에는 integration으로 넘어가지 않는다"],
+        ["DG-04 Host integration", "INTEGRATE-01, INTEGRATE-02", "generated adapter가 host code에 연결되고 generated file hand-edit가 필요 없다", "packaging/adapter contract를 먼저 수정한다"],
+        ["DG-05 Governance convergence", "GOV-01, ASOT-01", "runtime/governance/doc-sync/audit와 annex docs가 같은 source/evidence set을 따른다", "source-of-truth와 audit evidence를 다시 맞춘다"],
+        ["DG-06 Final acceptance", "E2E-01, E2E-02, VERIFY-01", "두 canonical slice와 final verification suite가 모두 fresh pass 한다", "completion claim을 보류하고 남은 workstream을 유지한다"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/20-traceability-matrix-rows.md",
+      "kind": "markdown_table",
+      "headers": ["Requirement ID", "Contract", "Docs", "Schema / Example", "Primary Tasks", "Verification Evidence"],
+      "rows": [
+        ["`REQ-01`", "`ScreenSpec` 는 supported core screen을 explicit하게 표현하는 authoritative contract여야 한다.", "`03`, `06`, `11`, `23`", "`schemas/screen-spec.schema.json`, `examples/screens/*.screen.json`", "`MODEL-01`, `DOC-01`, `VALIDATE-01`", "schema diff, model tests, validation reports"],
+        ["`REQ-02`", "`screen-doc` 는 사람의 intent source이고 `compile-screen-doc` 는 starter spec + completion report를 생성해야 한다.", "`03`, `11`, `18`", "`examples/screen-doc/*.md`, compile report shape", "`AUTHOR-01`, `AUTHOR-02`, `E2E-01`, `E2E-02`", "compile tests, starter-spec snapshots, completion reports"],
+        ["`REQ-03`", "generation 전에 unresolved/ambiguous semantics를 반드시 차단해야 한다.", "`11`, `13`, `20`", "validation fixtures, enriched spec examples", "`VALIDATE-01`, `VERIFY-01`", "negative fixtures, validation JSON, smoke checks"],
+        ["`REQ-04`", "SwiftUI / Compose / HTML은 상태, 액션, 네비게이션, media semantics를 같은 의미로 유지해야 한다.", "`08`, `11`, `17`", "enriched ScreenSpec examples", "`GENERATE-01`, `REVIEW-01`, `INTEGRATE-01`, `INTEGRATE-02`", "golden tests, generated artifacts, parity review"],
+        ["`REQ-05`", "HTML preview는 declared preview state 전체의 canonical review surface여야 한다.", "`09`, `11`, `18`", "preview-enabled example specs", "`REVIEW-01`, `E2E-01`, `E2E-02`", "preview bundle, review checklist, acceptance report"],
+        ["`REQ-06`", "generated file은 disposable이고 host logic은 generated adapter를 통해 연결되어야 한다.", "`10`, `17`, `23`", "generated adapter contract, host package layout", "`INTEGRATE-01`, `INTEGRATE-02`, `VERIFY-01`", "host compile logs, compile-backed smoke tests, guide reread"],
+        ["`REQ-07`", "runtime/governance/doc-sync/audit는 확장된 contract와 evidence set의 authoritative source여야 한다.", "`11`, `21`, `23`, `24`, `25`", "`meta/runtime/contracts.cue`, `meta/governance/contracts.cue`, `meta/views/*.json`", "`GOV-01`, `ASOT-01`, `VERIFY-01`", "contract export verify, audit JSON, fragment freshness"],
+        ["`REQ-08`", "`login` slice는 최종 form-flow completion을 증명해야 한다.", "`11`, `18`, `22`", "`examples/screen-doc/login.md`, `examples/screens/login.screen.json`", "`E2E-01`, `VERIFY-01`", "login acceptance report, generated artifacts, host smoke"],
+        ["`REQ-09`", "`product-detail` slice는 최종 content/action completion을 증명해야 한다.", "`11`, `18`, `22`", "`examples/screen-doc/product-detail.md`, `examples/screens/product-detail.screen.json`", "`E2E-02`, `VERIFY-01`", "product-detail acceptance report, generated artifacts, host smoke"],
+        ["`REQ-10`", "docs / schema / examples / prompts / audit artifact는 contract 변화와 함께 움직여야 한다.", "`11`, `12`, `20`, `21`, `22`, `24`, `25`", "전체 문서 패키지, schemas, examples", "`DOC-01`, `GOV-01`, `VERIFY-01`", "integrity audit, doc-sync verify, updated artifacts, link scan"],
+        ["`REQ-11`", "canonical execution plan은 하나여야 하며 workstream annex는 그 계획에 종속되어야 한다.", "`11`, `12`, `18`, `20`, `24`, `25`", "`meta/views/governance.fragments.json`, annex docs", "`PLAN-01`, `ASOT-01`", "rendered docs, reread checklist, link scan"],
+        ["`REQ-12`", "final completion은 fresh end-to-end evidence로만 주장할 수 있어야 한다.", "`11`, `12`, `21`, `22`", "acceptance specs, audit artifacts", "`VERIFY-01`, `E2E-01`, `E2E-02`", "tests, audit JSON, doc-sync sync, host smoke logs"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/24-authoritative-source-execution-plan-phases.md",
+      "kind": "markdown_table",
+      "headers": ["Phase", "Status", "Objective", "Depends On", "Exit evidence"],
+      "rows": [
+        ["A0", "Done", "baseline authoritative roots와 final target 간 gap을 동결한다", "none", "source inventory와 gap list가 `11/12/20/23/24/25`에 반영된다"],
+        ["A1", "Done", "authoring contract roots를 final core semantics에 맞게 확장한다", "A0", "schema/docs/examples가 state/action/navigation/asset/preview contract를 명시한다"],
+        ["A2", "Done", "runtime/governance roots를 expanded evidence/output contract로 확장한다", "A1", "exported contract views와 audit checks가 새 fields/evidence key를 가진다"],
+        ["A3", "Done", "planning fragments, generated docs, annex docs를 같은 source 체계로 정렬한다", "A2", "`11`, `12`, `20`, `23`, `24`, `25` 가 같은 terms/task/evidence를 사용한다"],
+        ["A4", "Done", "host integration evidence를 source-owned artifact로 편입한다", "A2", "iOS/Android integration smoke evidence가 governance inventory에 등록되고 compile-backed smoke로 검증된다"],
+        ["A5", "Done", "canonical slice acceptance evidence를 freeze 한다", "A3, A4", "`login`, `product-detail` acceptance artifact가 traceability와 audit에 연결되고 pass 상태로 유지된다"]
+      ]
+    },
+    {
+      "path": "meta/views/fragments/25-authoritative-source-task-matrix-rows.md",
+      "kind": "markdown_table",
+      "headers": ["Task ID", "Status", "Priority", "Action", "Depends On", "Done when", "Evidence"],
+      "rows": [
+        ["ASOT-00", "Done", "P0", "baseline runtime/governance roots와 doc-sync export/render/verify path를 유지한다", "none", "checked-in roots와 generated views가 fresh 하다", "`ds-doc-sync sync`, exported views, audit JSON"],
+        ["ASOT-01", "Done", "P0", "authoring contract roots가 state/action/navigation/asset/preview semantics를 명시하도록 확장한다", "ASOT-00", "schema/docs/examples가 final core semantics를 source-owned field로 가진다", "schema diff, updated docs, example specs"],
+        ["ASOT-02", "Done", "P0", "runtime root에 expanded command/evidence/output contract를 반영한다", "ASOT-01", "exported runtime view가 final core workflow surface를 포함한다", "`meta/runtime/contracts.cue`, exported runtime view, smoke tests"],
+        ["ASOT-03", "Done", "P0", "governance root에 acceptance artifact inventory와 evidence ref를 추가한다", "ASOT-01", "exported governance view가 docs, annexes, acceptance artifacts를 추적한다", "`meta/governance/contracts.cue`, exported governance view"],
+        ["ASOT-04", "Done", "P1", "planning fragments가 final completion gates/traceability/ownership boundary를 유지하도록 확장한다", "ASOT-02, ASOT-03", "`11`, `12`, `20`, `23`, `24`, `25` generated section이 같은 terms/evidence를 사용한다", "fragment source, rendered docs, doc-sync manifest"],
+        ["ASOT-05", "Done", "P0", "audit와 doc-sync verify가 새 contract/evidence set을 자동으로 검증하도록 확장한다", "ASOT-02, ASOT-03, ASOT-04", "stale contract/doc/evidence drift가 자동으로 감지된다", "audit checks, doc-sync verify, failing fixtures"],
+        ["ASOT-06", "Done", "P1", "iOS/Android host integration evidence를 governance inventory에 편입한다", "ASOT-03", "integration smoke output이 source-owned artifact로 추적된다", "host smoke logs, inventory update"],
+        ["ASOT-07", "Done", "P0", "`login`, `product-detail` acceptance evidence를 traceable artifact로 등록한다", "ASOT-05, ASOT-06", "두 canonical slice의 acceptance artifact가 traceability와 validation docs에 연결된다", "acceptance reports, traceability rows"],
+        ["ASOT-08", "Done", "P0", "final completion 직전 authoritative-source freeze를 수행한다", "ASOT-07", "contract views, fragments, docs, annexes, audit artifacts가 모두 fresh 하다", "`ds-doc-sync sync`, `dsctl audit`, reread checklist"]
+      ]
+    }
+  ]
+}

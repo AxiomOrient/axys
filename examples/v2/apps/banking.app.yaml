@@ -1,0 +1,32 @@
+schemaVersion: "2.1"
+appId: banking
+title: Banking Mobile
+description: Deterministic contract set for the banking onboarding app.
+brands:
+  - default
+targetPlatforms:
+  - html
+  - ios
+  - android
+tokenSet: examples/tokens/theme.light.tokens.json
+componentRegistry: registries/shadcn/registry.json
+motionSet: examples/v2/motion/mobile-core.motion.yaml
+reviewSet: examples/v2/review/mobile-core.review.yaml
+sampleApps:
+  ios: samples/ios/BankingSample
+  android: samples/android/banking-sample
+reviewBenchmarks:
+  - source: pageflows
+    url: https://pageflows.com
+    tags:
+      - onboarding
+      - verification
+  - source: 60fps
+    url: https://60fps.design
+    tags:
+      - restrained-motion
+flows:
+  - id: onboarding
+    path: examples/v2/flows/banking-onboarding.flow.yaml
+  - id: consent
+    path: examples/v2/flows/banking-consent.flow.yaml

@@ -1,0 +1,52 @@
+schemaVersion: "2.1"
+appId: banking
+flowId: consent
+screenId: onboarding-consent
+title: Consent Review
+route: /onboarding/consent
+targets:
+  - html
+  - ios
+  - android
+intent: Confirm consent before the user continues into account setup.
+surface:
+  backgroundColor: "{color.surface.canvas}"
+  padding: "{space.screen.inset}"
+states:
+  - default
+  - success
+actions:
+  - id: accept-consent
+    kind: local
+previewStates:
+  - id: default
+    note: Terms summary and next action are visible without scrolling context.
+  - id: success
+    note: Consent has been accepted and the user can continue.
+motion:
+  - patternId: screen-slide-in
+    trigger: screen-enter
+reviewChecklist:
+  - structure.primary_intent
+  - semantics.cta_clarity
+  - tokens.alias_only
+  - motion.reduced_motion_fallback
+  - native-viability.single_primary_cta
+layout:
+  kind: stack
+  id: onboarding-consent-root
+  direction: vertical
+  spacing: "{space.stack.lg}"
+  children:
+    - kind: component
+      id: consent-header
+      componentId: top-app-bar
+      props:
+        title: Review consent
+        subtitle: We only use your number to secure the account
+    - kind: component
+      id: consent-cta
+      componentId: button
+      props:
+        label: Accept and continue
+        variant: primary

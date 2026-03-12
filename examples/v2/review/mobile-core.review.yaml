@@ -1,0 +1,63 @@
+schemaVersion: "2.1"
+reviewSetId: mobile-core
+checks:
+  - id: structure.primary_intent
+    category: structure
+    description: One screen presents one primary task and one dominant CTA.
+    required: true
+    evidenceTypes:
+      - html-preview
+      - screenshot
+  - id: semantics.cta_clarity
+    category: semantics
+    description: CTA copy explains the result of tapping it without ambiguity.
+    required: true
+    evidenceTypes:
+      - html-preview
+  - id: semantics.form_completion_path
+    category: semantics
+    description: Form completion path is visible without hidden mandatory context.
+    required: true
+    evidenceTypes:
+      - html-preview
+      - native-build
+  - id: semantics.input_label_clarity
+    category: semantics
+    description: Input labels and helper text clearly describe expected values.
+    required: true
+    evidenceTypes:
+      - html-preview
+  - id: tokens.alias_only
+    category: tokens
+    description: Screen contracts use token aliases rather than raw literals for surface styling.
+    required: true
+    evidenceTypes:
+      - contract-audit
+  - id: motion.reduced_motion_fallback
+    category: motion
+    description: Motion pattern declares a reduced-motion fallback with the same semantic intent.
+    required: true
+    evidenceTypes:
+      - contract-audit
+      - html-preview
+  - id: native-viability.single_primary_cta
+    category: native-viability
+    description: A single primary CTA maps cleanly to native action surfaces.
+    required: true
+    evidenceTypes:
+      - ios-build
+      - android-build
+  - id: native-viability.field_action_mapping
+    category: native-viability
+    description: Form fields and submit actions map to stable native component APIs.
+    required: true
+    evidenceTypes:
+      - ios-build
+      - android-build
+  - id: native-viability.keyboard_mapping
+    category: native-viability
+    description: Web input intent maps to appropriate native keyboard behavior.
+    required: true
+    evidenceTypes:
+      - ios-build
+      - android-build

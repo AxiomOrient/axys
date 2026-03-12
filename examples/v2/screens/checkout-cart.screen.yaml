@@ -1,0 +1,61 @@
+schemaVersion: "2.1"
+appId: commerce
+flowId: checkout
+screenId: cart
+title: Cart
+route: /checkout/cart
+targets:
+  - html
+  - ios
+  - android
+intent: Help the user confirm order summary before moving to payment.
+surface:
+  backgroundColor: "{color.surface.canvas}"
+  padding: "{space.screen.inset}"
+states:
+  - default
+  - loading
+  - error
+actions:
+  - id: continue
+    kind: local
+navigation:
+  - id: go-payment
+    route: /checkout/payment
+previewStates:
+  - id: default
+    note: Summary is ready and the CTA is enabled.
+  - id: loading
+    note: Summary skeleton is shown while pricing refreshes.
+  - id: error
+    note: Summary failed to refresh and shows a retry affordance.
+layout:
+  kind: stack
+  id: cart-root
+  direction: vertical
+  spacing: "{space.stack.lg}"
+  children:
+    - kind: component
+      id: cart-header
+      componentId: top-app-bar
+      props:
+        title: Your cart
+        subtitle: Review items before payment
+    - kind: component
+      id: cart-summary
+      componentId: checkout-summary
+      props:
+        itemCount: "2"
+        totalText: "$89.00"
+        secondaryText: Includes shipping
+    - kind: component
+      id: continue-button
+      componentId: button
+      props:
+        label: Continue to payment
+        variant: primary
+reviewChecklist:
+  - structure.primary_intent
+  - semantics.cta_clarity
+  - tokens.alias_only
+  - native-viability.single_primary_cta

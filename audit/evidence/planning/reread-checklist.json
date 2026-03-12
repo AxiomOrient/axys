@@ -1,0 +1,19 @@
+{
+  "artifactId": "authoritative_source_reread",
+  "artifactType": "reread_checklist",
+  "verifiedOn": "2026-03-11",
+  "documents": [
+    "MASTER_BLUEPRINT.md",
+    "docs/11-execution-plan.md",
+    "docs/12-task-matrix.md",
+    "docs/18-a-to-z-onboarding.md",
+    "docs/20-traceability-matrix.md",
+    "docs/23-authoritative-source-architecture.md",
+    "docs/24-authoritative-source-execution-plan.md",
+    "docs/25-authoritative-source-task-matrix.md"
+  ],
+  "notes": [
+    "Execution authority remains in docs/11, docs/12, and docs/20; docs/24 and docs/25 stay subordinate annexes.",
+    "The checked-in planning package shares one open blocker: Android compile-backed host smoke and screenshot evidence remain unavailable on this machine because dsctl doctor --json still reports android_host_smoke=false."
+  ]
+}

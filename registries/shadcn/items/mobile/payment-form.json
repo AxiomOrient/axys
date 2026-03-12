@@ -1,0 +1,41 @@
+{
+  "id": "payment-form",
+  "kind": "mobile",
+  "allowedProps": [
+    {
+      "name": "submitLabel",
+      "type": "string"
+    }
+  ],
+  "stateRequirements": {
+    "fields": [
+      "cardNumber",
+      "cardHolder"
+    ],
+    "actions": [
+      "submit-payment"
+    ]
+  },
+  "motionSlots": [
+    "submit-progress"
+  ],
+  "web": {
+    "source": "private-shadcn-registry",
+    "importPath": "@/registry/mobile/payment-form",
+    "exportName": "PaymentForm"
+  },
+  "native": {
+    "ios": {
+      "component": "AXYSPaymentForm",
+      "props": {
+        "submitLabel": "submitLabel"
+      }
+    },
+    "android": {
+      "component": "AxysPaymentForm",
+      "props": {
+        "submitLabel": "submitLabel"
+      }
+    }
+  }
+}

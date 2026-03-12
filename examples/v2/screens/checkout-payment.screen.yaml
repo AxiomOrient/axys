@@ -1,0 +1,80 @@
+schemaVersion: "2.1"
+appId: commerce
+flowId: checkout
+screenId: payment
+title: Payment
+route: /checkout/payment
+targets:
+  - html
+  - ios
+  - android
+intent: Collect payment details and confirm the order with a single primary action.
+surface:
+  backgroundColor: "{color.surface.canvas}"
+  padding: "{space.screen.inset}"
+states:
+  - default
+  - loading
+  - error
+stateFields:
+  - id: cardNumber
+    type: string
+    defaultValue: ""
+  - id: cardHolder
+    type: string
+    defaultValue: ""
+actions:
+  - id: submit-payment
+    kind: network
+navigation:
+  - id: go-cart
+    route: /checkout/cart
+previewStates:
+  - id: default
+    note: Empty form with enabled CTA.
+  - id: loading
+    values:
+      cardNumber: "4242 4242 4242 4242"
+      cardHolder: "A. Kim"
+    note: CTA shows progress while payment submission runs.
+  - id: error
+    values:
+      cardNumber: "4242 4242 4242 4242"
+      cardHolder: "A. Kim"
+    note: Payment failed and the retry CTA remains available.
+motion:
+  - patternId: screen-slide-in
+    trigger: screen-enter
+  - patternId: cta-progress
+    trigger: submit-payment
+layout:
+  kind: stack
+  id: payment-root
+  direction: vertical
+  spacing: "{space.stack.lg}"
+  children:
+    - kind: component
+      id: payment-header
+      componentId: top-app-bar
+      props:
+        title: Payment
+        subtitle: Secure checkout
+    - kind: component
+      id: payment-form
+      componentId: payment-form
+      bindings:
+        - field: cardNumber
+        - field: cardHolder
+      props:
+        submitLabel: Pay now
+    - kind: component
+      id: payment-submit
+      componentId: button
+      props:
+        label: Pay now
+        variant: primary
+reviewChecklist:
+  - structure.primary_intent
+  - semantics.form_completion_path
+  - motion.reduced_motion_fallback
+  - native-viability.field_action_mapping

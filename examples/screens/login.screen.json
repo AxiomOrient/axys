@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "1.0",
+  "screenId": "login",
+  "title": "Login",
+  "intent": "quiet single-column login",
+  "constraints": [
+    "one dominant primary action",
+    "no decorative elements",
+    "semantic tokens only"
+  ],
+  "states": [
+    "default",
+    "loading",
+    "error"
+  ],
+  "stateFields": [
+    {
+      "id": "email",
+      "type": "string",
+      "defaultValue": ""
+    },
+    {
+      "id": "password",
+      "type": "string",
+      "defaultValue": ""
+    }
+  ],
+  "actions": [
+    {
+      "id": "submitLogin"
+    }
+  ],
+  "previewStates": [
+    {
+      "id": "default",
+      "values": {
+        "email": "",
+        "password": ""
+      }
+    },
+    {
+      "id": "loading",
+      "note": "Submitting credentials",
+      "values": {
+        "email": "alex@example.com",
+        "password": "hunter2"
+      }
+    },
+    {
+      "id": "error",
+      "note": "Invalid email or password.",
+      "values": {
+        "email": "alex@example.com",
+        "password": ""
+      }
+    }
+  ],
+  "platforms": [
+    "ios",
+    "android",
+    "html"
+  ],
+  "surface": {
+    "backgroundColor": "{color.surface.primary}",
+    "padding": "{space.6}"
+  },
+  "root": {
+    "kind": "vstack",
+    "spacing": "{space.4}",
+    "children": [
+      {
+        "kind": "text",
+        "role": "title",
+        "text": "Welcome back"
+      },
+      {
+        "kind": "text",
+        "role": "body",
+        "text": "Use your account to continue."
+      },
+      {
+        "kind": "textField",
+        "id": "emailField",
+        "binding": "email",
+        "label": "Email",
+        "inputType": "email"
+      },
+      {
+        "kind": "secureField",
+        "id": "passwordField",
+        "binding": "password",
+        "label": "Password"
+      },
+      {
+        "kind": "button",
+        "variant": "primary",
+        "title": "Continue",
+        "action": "submitLogin"
+      },
+      {
+        "kind": "text",
+        "role": "caption",
+        "text": "No extra decoration. Just the essentials."
+      }
+    ]
+  }
+}

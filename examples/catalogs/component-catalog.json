@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0",
+  "components": [
+    {
+      "kind": "vstack"
+    },
+    {
+      "kind": "hstack"
+    },
+    {
+      "kind": "card"
+    },
+    {
+      "kind": "text",
+      "roles": [
+        "title",
+        "body",
+        "caption",
+        "label"
+      ]
+    },
+    {
+      "kind": "textField",
+      "inputTypes": [
+        "text",
+        "email",
+        "number"
+      ]
+    },
+    {
+      "kind": "secureField"
+    },
+    {
+      "kind": "button",
+      "variants": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "kind": "spacer"
+    },
+    {
+      "kind": "image"
+    },
+    {
+      "kind": "icon"
+    }
+  ]
+}

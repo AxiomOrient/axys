@@ -1,0 +1,70 @@
+schemaVersion: "2.1"
+appId: banking
+flowId: onboarding
+screenId: verify-phone
+title: Verify Phone
+route: /onboarding/verify-phone
+targets:
+  - html
+  - ios
+  - android
+intent: Collect a mobile number and send a one-time verification code.
+surface:
+  backgroundColor: "{color.surface.canvas}"
+  padding: "{space.screen.inset}"
+states:
+  - default
+  - loading
+  - error
+stateFields:
+  - id: phoneNumber
+    type: string
+    defaultValue: ""
+actions:
+  - id: send-otp
+    kind: network
+previewStates:
+  - id: default
+    note: Empty field with guidance copy.
+  - id: loading
+    values:
+      phoneNumber: "01012341234"
+    note: Submit is in progress while the verification code request is sent.
+  - id: error
+    values:
+      phoneNumber: "01012341234"
+    note: Inline error explains invalid country format.
+motion:
+  - patternId: screen-slide-in
+    trigger: screen-enter
+layout:
+  kind: stack
+  id: verify-phone-root
+  direction: vertical
+  spacing: "{space.stack.lg}"
+  children:
+    - kind: component
+      id: onboarding-header
+      componentId: top-app-bar
+      props:
+        title: Verify your phone
+        subtitle: We will text you a one-time code
+    - kind: component
+      id: phone-input
+      componentId: text-input
+      bindings:
+        - field: phoneNumber
+      props:
+        label: Mobile number
+        keyboard: phone
+        placeholder: "010 1234 1234"
+    - kind: component
+      id: verify-cta
+      componentId: button
+      props:
+        label: Send code
+        variant: primary
+reviewChecklist:
+  - structure.primary_intent
+  - semantics.input_label_clarity
+  - native-viability.keyboard_mapping

@@ -1,0 +1,244 @@
+{
+  "schemaVersion": "2.1",
+  "registryId": "axys-mobile-core",
+  "namespace": "@axys-mobile",
+  "items": [
+    {
+      "id": "button",
+      "kind": "primitive",
+      "allowedProps": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "variant",
+          "type": "enum",
+          "allowedValues": [
+            "primary",
+            "secondary",
+            "quiet"
+          ]
+        }
+      ],
+      "motionSlots": [
+        "press",
+        "progress"
+      ],
+      "reviewHints": [
+        "Only one primary button should dominate a screen."
+      ],
+      "web": {
+        "source": "private-shadcn-registry",
+        "importPath": "@/registry/primitives/button",
+        "exportName": "Button"
+      },
+      "native": {
+        "ios": {
+          "component": "AXYSPrimaryButton",
+          "props": {
+            "label": "title",
+            "variant": "style"
+          }
+        },
+        "android": {
+          "component": "AxysPrimaryButton",
+          "props": {
+            "label": "label",
+            "variant": "style"
+          }
+        }
+      }
+    },
+    {
+      "id": "text-input",
+      "kind": "primitive",
+      "allowedProps": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string"
+        },
+        {
+          "name": "keyboard",
+          "type": "enum",
+          "allowedValues": [
+            "default",
+            "phone",
+            "email"
+          ]
+        }
+      ],
+      "stateRequirements": {
+        "fields": [
+          "phoneNumber"
+        ]
+      },
+      "reviewHints": [
+        "Input labels must stay visible while the field is focused."
+      ],
+      "web": {
+        "source": "private-shadcn-registry",
+        "importPath": "@/registry/primitives/text-input",
+        "exportName": "TextInput"
+      },
+      "native": {
+        "ios": {
+          "component": "AXYSTextField",
+          "props": {
+            "label": "label",
+            "placeholder": "placeholder",
+            "keyboard": "keyboardType"
+          }
+        },
+        "android": {
+          "component": "AxysTextField",
+          "props": {
+            "label": "label",
+            "placeholder": "placeholder",
+            "keyboard": "keyboardType"
+          }
+        }
+      }
+    },
+    {
+      "id": "top-app-bar",
+      "kind": "flow-shell",
+      "allowedProps": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "subtitle",
+          "type": "string"
+        }
+      ],
+      "slots": [
+        {
+          "name": "trailing"
+        }
+      ],
+      "reviewHints": [
+        "Keep shell chrome quieter than the content area."
+      ],
+      "web": {
+        "source": "private-shadcn-registry",
+        "importPath": "@/registry/flow-shells/top-app-bar",
+        "exportName": "TopAppBar"
+      },
+      "native": {
+        "ios": {
+          "component": "AXYSTopAppBar",
+          "props": {
+            "title": "title",
+            "subtitle": "subtitle"
+          }
+        },
+        "android": {
+          "component": "AxysTopAppBar",
+          "props": {
+            "title": "title",
+            "subtitle": "subtitle"
+          }
+        }
+      }
+    },
+    {
+      "id": "checkout-summary",
+      "kind": "mobile",
+      "allowedProps": [
+        {
+          "name": "itemCount",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "totalText",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "secondaryText",
+          "type": "string"
+        }
+      ],
+      "reviewHints": [
+        "The price and next step must remain above the fold on mobile."
+      ],
+      "web": {
+        "source": "private-shadcn-registry",
+        "importPath": "@/registry/mobile/checkout-summary",
+        "exportName": "CheckoutSummary"
+      },
+      "native": {
+        "ios": {
+          "component": "AXYSCheckoutSummaryCard",
+          "props": {
+            "itemCount": "itemCountText",
+            "totalText": "totalText",
+            "secondaryText": "caption"
+          }
+        },
+        "android": {
+          "component": "AxysCheckoutSummaryCard",
+          "props": {
+            "itemCount": "itemCountText",
+            "totalText": "totalText",
+            "secondaryText": "caption"
+          }
+        }
+      }
+    },
+    {
+      "id": "payment-form",
+      "kind": "mobile",
+      "allowedProps": [
+        {
+          "name": "submitLabel",
+          "type": "string"
+        }
+      ],
+      "stateRequirements": {
+        "fields": [
+          "cardNumber",
+          "cardHolder"
+        ],
+        "actions": [
+          "submit-payment"
+        ]
+      },
+      "motionSlots": [
+        "submit-progress"
+      ],
+      "reviewHints": [
+        "Field grouping and card CTA should read as one completion path."
+      ],
+      "web": {
+        "source": "private-shadcn-registry",
+        "importPath": "@/registry/mobile/payment-form",
+        "exportName": "PaymentForm"
+      },
+      "native": {
+        "ios": {
+          "component": "AXYSPaymentForm",
+          "props": {
+            "submitLabel": "submitLabel"
+          }
+        },
+        "android": {
+          "component": "AxysPaymentForm",
+          "props": {
+            "submitLabel": "submitLabel"
+          }
+        }
+      }
+    }
+  ]
+}

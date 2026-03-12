@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/screen-spec.schema.json",
+  "title": "ScreenSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "screenId",
+    "title",
+    "platforms",
+    "surface",
+    "root"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "screenId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route": {
+      "type": "string",
+      "pattern": "^\\/\\S*$"
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "stateFields": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stateField"
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "previewStates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/previewState"
+      }
+    },
+    "navigation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/navigationDestination"
+      }
+    },
+    "platforms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "ios",
+          "android",
+          "html"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backgroundColor",
+        "padding"
+      ],
+      "properties": {
+        "backgroundColor": {
+          "type": "string",
+          "pattern": "^\\{[a-zA-Z0-9._-]+\\}$"
+        },
+        "padding": {
+          "type": "string",
+          "pattern": "^\\{[a-zA-Z0-9._-]+\\}$"
+        }
+      }
+    },
+    "root": {
+      "$ref": "#/$defs/node"
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "vstack",
+            "hstack",
+            "card",
+            "text",
+            "textField",
+            "secureField",
+            "button",
+            "divider",
+            "spacer",
+            "image",
+            "icon"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "variant": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "navigation": {
+          "type": "string"
+        },
+        "binding": {
+          "type": "string"
+        },
+        "inputType": {
+          "type": "string"
+        },
+        "spacing": {
+          "type": "string",
+          "pattern": "^\\{[a-zA-Z0-9._-]+\\}$"
+        },
+        "assetName": {
+          "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      }
+    },
+    "stateField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "string",
+            "boolean",
+            "integer",
+            "number"
+          ]
+        },
+        "defaultValue": {
+          "$ref": "#/$defs/jsonValue"
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "image",
+            "icon"
+          ]
+        }
+      }
+    },
+    "previewState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "navigationDestination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "route"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "route": {
+          "type": "string",
+          "pattern": "^\\/\\S*$"
+        }
+      }
+    },
+    "jsonValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    }
+  }
+}
