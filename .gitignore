@@ -1,0 +1,27 @@
+.DS_Store
+
+# SwiftPM and local tool state
+.build/
+.swiftpm/
+
+# Generated review / native / audit artifacts
+build/
+
+# Generated sample app artifacts
+samples/ios/*/GeneratedUI/
+samples/ios/*/HostSmoke/
+samples/ios/*/BuildArtifacts/
+samples/android/*/GeneratedUI/
+samples/android/*/HostSmoke/
+samples/android/*/BuildArtifacts/
+
+# Editor and IDE noise
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Apple local build products
+DerivedData/
+*.xcuserstate
+xcuserdata/
