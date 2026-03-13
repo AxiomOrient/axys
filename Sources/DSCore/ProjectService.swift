@@ -242,10 +242,17 @@ public struct ProjectService: Sendable {
                 )
             }
 
+            let proofManifestURL = try writeHostProofManifest(
+                sampleRoot: sampleRoot,
+                platform: platform,
+                screenReports: screenReports
+            )
+
             platformReports.append(
                 .init(
                     platform: platform,
                     sampleAppPath: sampleRoot.path,
+                    proofManifestPath: proofManifestURL.path,
                     screens: screenReports
                 )
             )
@@ -303,8 +310,23 @@ public struct ProjectService: Sendable {
             "contracts/registry",
             "contracts/tokens",
             "schemas/current",
-            "PreviewApp",
-            "HostApps",
+            "PreviewApp/shell",
+            "PreviewApp/shell/layout.html",
+            "PreviewApp/shell/review.css",
+            "PreviewApp/shell/review.js",
+            "PreviewApp/evidence/drivers",
+            "PreviewApp/evidence/drivers/agent-browser-driver.sh",
+            "PreviewApp/evidence/scripts",
+            "PreviewApp/evidence/scripts/run-preview-evidence.sh",
+            "PreviewApp/evidence/scripts/run-shell-smoke.sh",
+            "HostApps/scripts",
+            "HostApps/scripts/run-host-proof.sh",
+            "HostApps/ios",
+            "HostApps/ios/scripts",
+            "HostApps/ios/scripts/run-host-proof.sh",
+            "HostApps/android",
+            "HostApps/android/scripts",
+            "HostApps/android/scripts/run-host-proof.sh",
             "meta/runtime/contracts.cue",
         ]
         let forbiddenPaths = [
@@ -521,8 +543,69 @@ public struct ProjectService: Sendable {
         # \(title) Sample App Harness
 
         This is a source-owned sample app harness root for `\(appId)`.
-        Generated files under `GeneratedUI/` and `BuildArtifacts/` are disposable.
+        Generated files under `GeneratedUI/`, `HostSmoke/`, `BuildArtifacts/`, and `HostProof/` are disposable.
         """.write(to: readmeURL, atomically: true, encoding: .utf8)
+    }
+
+    private func writeHostProofManifest(
+        sampleRoot: URL,
+        platform: Platform,
+        screenReports: [SampleAppScreenBuildReport]
+    ) throws -> URL {
+        let proofRoot = sampleRoot.appendingPathComponent("HostProof", isDirectory: true)
+        try FileManager.default.createDirectory(at: proofRoot, withIntermediateDirectories: true)
+
+        let generatedMountRoot = sampleRoot
+            .appendingPathComponent("GeneratedUI", isDirectory: true)
+            .appendingPathComponent(platform.rawValue, isDirectory: true)
+        let wrapperRoot = sampleRoot
+            .appendingPathComponent("HostSmoke", isDirectory: true)
+            .appendingPathComponent(platform.rawValue, isDirectory: true)
+        let logsRoot = sampleRoot
+            .appendingPathComponent("BuildArtifacts", isDirectory: true)
+            .appendingPathComponent(platform.rawValue, isDirectory: true)
+
+        let manifest = HostProofManifest(
+            ok: true,
+            platform: platform,
+            sampleAppPath: sampleRoot.path,
+            generatedMountRoot: generatedMountRoot.path,
+            wrapperRoot: wrapperRoot.path,
+            logsRoot: logsRoot.path,
+            levels: [
+                .init(
+                    id: "level-0-generated",
+                    title: "Generated source smoke",
+                    path: generatedMountRoot.path,
+                    summary: "Generated UI output ready for host mounting."
+                ),
+                .init(
+                    id: "level-1-host-build",
+                    title: "Host harness build",
+                    path: wrapperRoot.path,
+                    summary: "Wrapper sources compile the generated UI inside a host harness."
+                ),
+                .init(
+                    id: "level-2-runtime-smoke",
+                    title: "Runtime flow smoke",
+                    path: logsRoot.path,
+                    summary: "Runtime logs prove the host harness executed the rendered flow."
+                ),
+            ],
+            screens: screenReports.map {
+                .init(
+                    screenId: $0.screenId,
+                    generatedMountPath: $0.outputDirectory,
+                    wrapperPath: $0.wrapperPath,
+                    buildLogPath: $0.buildLogPath,
+                    runtimeLogPath: $0.runtimeLogPath
+                )
+            }
+        )
+
+        let manifestURL = proofRoot.appendingPathComponent("proof.manifest.json")
+        try writeJSON(manifest, to: manifestURL)
+        return manifestURL
     }
 
     private func sampleWrapperExtension(for platform: Platform) -> String {

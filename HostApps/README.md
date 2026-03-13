@@ -8,6 +8,16 @@ HostApps/
   android/
 ```
 
+권장 proof 구조:
+
+```text
+<sample-root>/
+  GeneratedUI/
+  HostSmoke/
+  BuildArtifacts/
+  HostProof/
+```
+
 ## 원칙
 
 1. HostApps는 generated source를 source of truth로 보지 않는다.
@@ -24,4 +34,4 @@ HostApps/
 
 ## 현재 상태
 
-HostApps는 generated-source smoke와 별개로 실제 native runtime proof를 수행하는 경계다. 이 디렉토리 아래의 호스트 앱과 스크립트만이 runtime proof 기준이 된다.
+HostApps는 generated-source smoke와 별개로 실제 native runtime proof를 수행하는 경계다. `build-sample-apps` 는 sample root 아래 `HostProof/proof.manifest.json` 을 남기고, 각 플랫폼 스크립트는 그 산출물을 runtime proof evidence로 소비한다.

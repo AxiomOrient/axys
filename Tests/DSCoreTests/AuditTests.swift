@@ -63,6 +63,20 @@ struct AuditTests {
         #expect(report.errors.contains(where: { $0.contains("contracts/screens") }))
     }
 
+    @Test("project audit reports missing preview shell assets and host proof scripts")
+    func auditProjectShapeMissingCriticalFiles() throws {
+        let root = try makeRenewalRepoFixture()
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        try FileManager.default.removeItem(at: root.appendingPathComponent("PreviewApp/shell/review.js"))
+        try FileManager.default.removeItem(at: root.appendingPathComponent("HostApps/scripts/run-host-proof.sh"))
+
+        let report = try service.audit(projectRoot: root)
+        #expect(!report.ok)
+        #expect(report.errors.contains(where: { $0.contains("PreviewApp/shell/review.js") }))
+        #expect(report.errors.contains(where: { $0.contains("HostApps/scripts/run-host-proof.sh") }))
+    }
+
     private func makeRenewalRepoFixture() throws -> URL {
         let root = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent("axys-audit-repo-\(UUID().uuidString)", isDirectory: true)
@@ -79,14 +93,40 @@ struct AuditTests {
             "contracts/registry",
             "contracts/tokens",
             "schemas/current",
-            "PreviewApp",
-            "HostApps",
+            "PreviewApp/shell",
+            "PreviewApp/evidence/drivers",
+            "PreviewApp/evidence/scripts",
+            "HostApps/scripts",
+            "HostApps/ios",
+            "HostApps/ios/scripts",
+            "HostApps/android",
+            "HostApps/android/scripts",
             "meta/runtime",
         ]
 
         for relative in requiredDirectories {
             let url = root.appendingPathComponent(relative, isDirectory: true)
             try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+        }
+
+        let requiredFiles = [
+            "PreviewApp/shell/layout.html",
+            "PreviewApp/shell/review.css",
+            "PreviewApp/shell/review.js",
+            "PreviewApp/evidence/drivers/agent-browser-driver.sh",
+            "PreviewApp/evidence/scripts/run-preview-evidence.sh",
+            "PreviewApp/evidence/scripts/run-shell-smoke.sh",
+            "HostApps/scripts/run-host-proof.sh",
+            "HostApps/ios/scripts/run-host-proof.sh",
+            "HostApps/android/scripts/run-host-proof.sh",
+        ]
+
+        for relative in requiredFiles {
+            try "# fixture\n".write(
+                to: root.appendingPathComponent(relative),
+                atomically: true,
+                encoding: .utf8
+            )
         }
 
         try "{\"schema\":1}".write(

@@ -54,6 +54,13 @@ struct NativeRendererTests {
         #expect(source.contains("@Preview(name = \"loading\")"))
     }
 
+    @Test("native renderer uses the shared implicit default preview state resolution")
+    func nativePreviewStateResolutionFallsBackToDefault() {
+        let screen = makeScreenWithEmptyPreviewStates(targets: [.ios, .android])
+
+        #expect(resolvedPreviewStateIDsForRendering(screen) == ["default"])
+    }
+
     private func repositoryRoot() -> URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()

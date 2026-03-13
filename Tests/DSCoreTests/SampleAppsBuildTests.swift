@@ -21,6 +21,8 @@ struct SampleAppsBuildTests {
         #expect(report.platforms.count == 2)
         #expect(iosReport.sampleAppPath.hasPrefix(fixture.root.path))
         #expect(androidReport.sampleAppPath.hasPrefix(fixture.root.path))
+        #expect(FileManager.default.fileExists(atPath: iosReport.proofManifestPath))
+        #expect(FileManager.default.fileExists(atPath: androidReport.proofManifestPath))
         #expect(FileManager.default.fileExists(atPath: URL(fileURLWithPath: iosCart.outputDirectory).appendingPathComponent("CartScreen.swift").path))
         #expect(FileManager.default.fileExists(atPath: iosCart.buildLogPath))
         #expect(FileManager.default.fileExists(atPath: iosCart.runtimeLogPath))
@@ -29,6 +31,13 @@ struct SampleAppsBuildTests {
         #expect(FileManager.default.fileExists(atPath: androidPayment.buildLogPath))
         #expect(FileManager.default.fileExists(atPath: androidPayment.runtimeLogPath))
         #expect(try String(contentsOfFile: androidPayment.runtimeLogPath).contains("runtime-smoke:ok:payment"))
+
+        let iosManifest = try JSONDecoder().decode(
+            HostProofManifest.self,
+            from: Data(contentsOf: URL(fileURLWithPath: iosReport.proofManifestPath))
+        )
+        #expect(iosManifest.levels.count == 3)
+        #expect(iosManifest.screens.contains(where: { $0.screenId == "cart" }))
     }
 
     private func makeFixture() throws -> (root: URL, appURL: URL) {

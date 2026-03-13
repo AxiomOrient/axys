@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>__SCREEN_ID__ review shell</title>
+  <link rel="stylesheet" href="shell/review.css" />
+</head>
+<body
+  data-screen-id="__SCREEN_ID__"
+  data-screen-html="__SCREEN_HTML__"
+  data-review-report="__REVIEW_JSON__"
+  data-tokens-css="__TOKENS_CSS__"
+  data-review-payload="__REVIEW_DATA_B64__"
+>
+  <main class="shell-app">
+    <header class="shell-hero">
+      <p class="shell-kicker">PreviewApp Review Shell</p>
+      <h1 class="shell-title" data-title>Loading review metadata…</h1>
+      <div class="shell-meta" data-meta-chips></div>
+    </header>
+    <section class="shell-grid">
+      <section class="shell-stage">
+        <div class="shell-toolbar">
+          <button class="shell-toggle" type="button" data-reduced-motion-toggle>Reduced motion: off</button>
+          <p class="shell-toolbar-copy">Canonical HTML review output is mounted in the frame below.</p>
+        </div>
+        <iframe class="shell-frame" data-screen-frame title="__SCREEN_ID__ review shell" loading="lazy"></iframe>
+      </section>
+      <aside class="shell-sidebar">
+        <section class="shell-card">
+          <p class="shell-card-title">Intent</p>
+          <p class="shell-copy" data-intent>No explicit intent.</p>
+        </section>
+        <section class="shell-card">
+          <div class="shell-card-header">
+            <p class="shell-card-title">Preview States</p>
+            <p class="shell-caption">Click to jump the frame</p>
+          </div>
+          <div class="shell-chip-list" data-preview-states></div>
+        </section>
+        <section class="shell-card">
+          <p class="shell-card-title">Review Checklist</p>
+          <ul class="shell-list" data-review-checklist></ul>
+        </section>
+        <section class="shell-card">
+          <p class="shell-card-title">Motion</p>
+          <ul class="shell-list" data-motion-patterns></ul>
+        </section>
+        <section class="shell-card">
+          <p class="shell-card-title">Token Inspector</p>
+          <ul class="shell-token-list" data-token-list></ul>
+        </section>
+        <section class="shell-card">
+          <p class="shell-card-title">Source Paths</p>
+          <dl class="shell-path-list" data-source-paths></dl>
+        </section>
+      </aside>
+    </section>
+  </main>
+  <script src="shell/review.js" defer></script>
+</body>
+</html>

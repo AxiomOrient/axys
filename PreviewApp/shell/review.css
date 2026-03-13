@@ -1,0 +1,190 @@
+:root {
+  color-scheme: light;
+  --shell-bg: #f4f0e8;
+  --shell-panel: rgba(255, 252, 247, 0.92);
+  --shell-border: rgba(34, 28, 20, 0.12);
+  --shell-ink: #231b14;
+  --shell-muted: #6a5d50;
+  --shell-accent: #b54f2d;
+  --shell-shadow: 0 24px 80px rgba(35, 27, 20, 0.12);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  background:
+    radial-gradient(circle at top left, rgba(181, 79, 45, 0.14), transparent 36%),
+    linear-gradient(180deg, #fbf7ef 0%, var(--shell-bg) 100%);
+  color: var(--shell-ink);
+}
+
+.shell-app {
+  width: min(1440px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 32px 0 40px;
+}
+
+.shell-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.shell-kicker,
+.shell-card-title,
+.shell-caption {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--shell-muted);
+}
+
+.shell-title {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3.4rem);
+  line-height: 0.95;
+  max-width: 14ch;
+}
+
+.shell-meta,
+.shell-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.shell-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.shell-stage,
+.shell-card {
+  border: 1px solid var(--shell-border);
+  background: var(--shell-panel);
+  border-radius: 28px;
+  box-shadow: var(--shell-shadow);
+}
+
+.shell-stage {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.shell-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.shell-toggle,
+.shell-chip {
+  border: 1px solid rgba(181, 79, 45, 0.24);
+  background: rgba(255, 255, 255, 0.84);
+  color: var(--shell-ink);
+  border-radius: 999px;
+  min-height: 36px;
+  padding: 0 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.shell-chip.is-active,
+.shell-toggle.is-active {
+  background: var(--shell-accent);
+  color: #fff7f1;
+  border-color: transparent;
+}
+
+.shell-toolbar-copy,
+.shell-copy {
+  margin: 0;
+  font-size: 15px;
+  color: var(--shell-muted);
+}
+
+.shell-frame {
+  width: 100%;
+  min-height: 920px;
+  border: 0;
+  border-radius: 22px;
+  background: #ffffff;
+}
+
+.shell-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.shell-card {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.shell-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.shell-list,
+.shell-token-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shell-token-list {
+  max-height: 240px;
+  overflow: auto;
+  font-family: "SFMono-Regular", "Menlo", monospace;
+  font-size: 13px;
+}
+
+.shell-path-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 12px;
+  font-size: 14px;
+}
+
+.shell-path-list dt {
+  color: var(--shell-muted);
+}
+
+.shell-path-list dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+body[data-reduced-motion="true"] .shell-frame {
+  filter: saturate(0.92);
+}
+
+@media (max-width: 1100px) {
+  .shell-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shell-frame {
+    min-height: 760px;
+  }
+}

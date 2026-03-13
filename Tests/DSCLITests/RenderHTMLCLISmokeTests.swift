@@ -19,10 +19,15 @@ struct RenderHTMLCLISmokeTests {
 
         let report = try JSONDecoder().decode(RenderHTMLReport.self, from: Data(result.stdout.utf8))
         let html = try String(contentsOf: outputDirectory.appendingPathComponent("html/payment.html"), encoding: .utf8)
+        let shell = try String(contentsOf: outputDirectory.appendingPathComponent("index.html"), encoding: .utf8)
 
         #expect(result.exitCode == 0)
         #expect(report.ok)
+        #expect(report.entrypointPath == outputDirectory.appendingPathComponent("index.html").path)
         #expect(html.contains("data-preview-state=\"error\""))
+        #expect(shell.contains("shell/review.css"))
+        #expect(shell.contains("data-review-payload=\""))
+        #expect(!shell.contains("<script id=\"review-data\""))
     }
 
     @Test("dsctl help exposes render-html")

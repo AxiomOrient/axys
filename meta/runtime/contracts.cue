@@ -35,6 +35,8 @@ evidenceKeys: [
     "audit_json",
     "doctor_report",
     "preview_smoke",
+    "browser_evidence",
+    "host_proof",
 ]
 
 doctorCapabilities: [

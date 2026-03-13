@@ -49,6 +49,8 @@ swift test
   --screen contracts/screens/checkout-payment.screen.yaml \
   --json
 
+# opens the Preview shell entrypoint at build/html/payment/index.html
+
 ./.build/debug/dsctl build-sample-apps \
   --app contracts/apps/commerce.app.yaml \
   --json

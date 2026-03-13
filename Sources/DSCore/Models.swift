@@ -314,6 +314,7 @@ public struct RenderHTMLReport: Codable, Sendable {
     public let ok: Bool
     public let screenId: String
     public let outputDirectory: String
+    public let entrypointPath: String
     public let artifacts: [GeneratedArtifact]
     public let reviewReportPath: String
 
@@ -321,12 +322,14 @@ public struct RenderHTMLReport: Codable, Sendable {
         ok: Bool,
         screenId: String,
         outputDirectory: String,
+        entrypointPath: String,
         artifacts: [GeneratedArtifact],
         reviewReportPath: String
     ) {
         self.ok = ok
         self.screenId = screenId
         self.outputDirectory = outputDirectory
+        self.entrypointPath = entrypointPath
         self.artifacts = artifacts.sorted { ($0.kind, $0.path) < ($1.kind, $1.path) }
         self.reviewReportPath = reviewReportPath
     }
@@ -430,11 +433,80 @@ public struct SampleAppScreenBuildReport: Codable, Sendable {
 public struct SampleAppPlatformBuildReport: Codable, Sendable {
     public let platform: Platform
     public let sampleAppPath: String
+    public let proofManifestPath: String
     public let screens: [SampleAppScreenBuildReport]
 
-    public init(platform: Platform, sampleAppPath: String, screens: [SampleAppScreenBuildReport]) {
+    public init(platform: Platform, sampleAppPath: String, proofManifestPath: String, screens: [SampleAppScreenBuildReport]) {
         self.platform = platform
         self.sampleAppPath = sampleAppPath
+        self.proofManifestPath = proofManifestPath
+        self.screens = screens.sorted { $0.screenId < $1.screenId }
+    }
+}
+
+public struct HostProofLevelReport: Codable, Sendable {
+    public let id: String
+    public let title: String
+    public let path: String
+    public let summary: String
+
+    public init(id: String, title: String, path: String, summary: String) {
+        self.id = id
+        self.title = title
+        self.path = path
+        self.summary = summary
+    }
+}
+
+public struct HostProofScreenEvidence: Codable, Sendable {
+    public let screenId: String
+    public let generatedMountPath: String
+    public let wrapperPath: String
+    public let buildLogPath: String
+    public let runtimeLogPath: String
+
+    public init(
+        screenId: String,
+        generatedMountPath: String,
+        wrapperPath: String,
+        buildLogPath: String,
+        runtimeLogPath: String
+    ) {
+        self.screenId = screenId
+        self.generatedMountPath = generatedMountPath
+        self.wrapperPath = wrapperPath
+        self.buildLogPath = buildLogPath
+        self.runtimeLogPath = runtimeLogPath
+    }
+}
+
+public struct HostProofManifest: Codable, Sendable {
+    public let ok: Bool
+    public let platform: Platform
+    public let sampleAppPath: String
+    public let generatedMountRoot: String
+    public let wrapperRoot: String
+    public let logsRoot: String
+    public let levels: [HostProofLevelReport]
+    public let screens: [HostProofScreenEvidence]
+
+    public init(
+        ok: Bool,
+        platform: Platform,
+        sampleAppPath: String,
+        generatedMountRoot: String,
+        wrapperRoot: String,
+        logsRoot: String,
+        levels: [HostProofLevelReport],
+        screens: [HostProofScreenEvidence]
+    ) {
+        self.ok = ok
+        self.platform = platform
+        self.sampleAppPath = sampleAppPath
+        self.generatedMountRoot = generatedMountRoot
+        self.wrapperRoot = wrapperRoot
+        self.logsRoot = logsRoot
+        self.levels = levels
         self.screens = screens.sorted { $0.screenId < $1.screenId }
     }
 }

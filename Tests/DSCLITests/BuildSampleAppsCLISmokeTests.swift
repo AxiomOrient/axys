@@ -22,6 +22,7 @@ struct BuildSampleAppsCLISmokeTests {
 
         #expect(result.exitCode == 0)
         #expect(report.ok)
+        #expect(FileManager.default.fileExists(atPath: androidReport.proofManifestPath))
         #expect(FileManager.default.fileExists(atPath: paymentReport.runtimeLogPath))
         #expect(try String(contentsOfFile: paymentReport.runtimeLogPath).contains("runtime-smoke:ok:payment"))
     }

@@ -46,4 +46,10 @@ PreviewApp evidence는 `agent-browser`를 우선 사용하되, renderer와 evide
 
 ## 현재 상태
 
-현재 저장소는 `dsctl render-html`과 HTML review bundle 생성 경로까지 구현돼 있다. PreviewApp은 그 출력 위에 얹히는 review layer다.
+현재 저장소는 `dsctl render-html` 결과의 루트 `index.html` 을 Preview shell entrypoint로 사용한다. source-owned shell 자산은 `PreviewApp/shell/*` 에 있고, generated bundle은 이 자산을 복사해 review layer로 사용한다.
+
+## 실행 경로
+
+1. `dsctl render-html --screen ... --out <bundle>`
+2. `<bundle>/index.html` 을 연다
+3. 필요하면 `PreviewApp/evidence/scripts/run-shell-smoke.sh <bundle>` 으로 shell evidence를 남긴다

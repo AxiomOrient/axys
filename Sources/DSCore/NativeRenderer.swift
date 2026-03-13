@@ -434,7 +434,7 @@ struct NativeRenderer {
     }
 
     private func renderSwiftPreviewBlocks(screen: ScreenSpec, screenName: String, stateName: String, actionsName: String, navigationName: String) -> String {
-        resolvedPreviewStates(for: screen).map { preview in
+        resolvedPreviewStatesForRendering(screen).map { preview in
             """
             #Preview("\(escapeSwift(preview.id))") {
                 \(screenName)(
@@ -448,7 +448,7 @@ struct NativeRenderer {
     }
 
     private func renderComposePreviewBlocks(screen: ScreenSpec, screenName: String, stateName: String, actionsName: String, navigationName: String) -> String {
-        resolvedPreviewStates(for: screen).map { preview in
+        resolvedPreviewStatesForRendering(screen).map { preview in
             let previewName = "\(screenName)\(pascalCase(from: preview.id))Preview"
             return """
             @Preview(name = "\(escapeKotlin(preview.id))")
@@ -472,10 +472,6 @@ struct NativeRenderer {
 
     private func collectBindings(in node: LayoutNode) -> [LayoutBinding] {
         node.bindings + node.children.flatMap(collectBindings)
-    }
-
-    private func resolvedPreviewStates(for screen: ScreenSpec) -> [PreviewState] {
-        screen.previewStates.isEmpty ? [PreviewState(id: "default")] : screen.previewStates
     }
 
     private func swiftPreviewStateLiteral(_ preview: PreviewState, screen: ScreenSpec, stateName: String) -> String {

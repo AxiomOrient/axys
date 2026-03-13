@@ -5,6 +5,7 @@ struct HTMLReviewDocument: Codable {
     let flowId: String
     let screenId: String
     let title: String
+    let intent: String?
     let route: String
     let previewStates: [String]
     let reviewChecklist: [String]
@@ -22,16 +23,21 @@ struct HTMLRenderer {
     ) throws -> RenderHTMLReport {
         let fileManager = FileManager.default
         let htmlDirectory = outputDirectory.appendingPathComponent("html", isDirectory: true)
+        let shellDirectory = outputDirectory.appendingPathComponent("shell", isDirectory: true)
         try fileManager.createDirectory(at: htmlDirectory, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: shellDirectory, withIntermediateDirectories: true)
 
         let htmlName = "\(context.screenSpec.screenId).html"
         let htmlURL = htmlDirectory.appendingPathComponent(htmlName)
-        let indexURL = htmlDirectory.appendingPathComponent("index.html")
+        let htmlIndexURL = htmlDirectory.appendingPathComponent("index.html")
         let cssURL = htmlDirectory.appendingPathComponent("tokens.css")
         let reviewURL = outputDirectory.appendingPathComponent("report.review.json")
+        let shellIndexURL = outputDirectory.appendingPathComponent("index.html")
+        let shellCSSURL = shellDirectory.appendingPathComponent("review.css")
+        let shellJSURL = shellDirectory.appendingPathComponent("review.js")
 
-        try write(renderHTML(context: context), to: htmlURL)
-        try write(renderIndex(htmlName: htmlName, screenId: context.screenSpec.screenId), to: indexURL)
+        try write(renderScreenHTML(context: context), to: htmlURL)
+        try write(renderHTMLIndex(htmlName: htmlName, screenId: context.screenSpec.screenId), to: htmlIndexURL)
         try write(renderTokensCSS(tokens: tokens), to: cssURL)
 
         let review = HTMLReviewDocument(
@@ -39,8 +45,9 @@ struct HTMLRenderer {
             flowId: context.flowSpec.flowId,
             screenId: context.screenSpec.screenId,
             title: context.screenSpec.title,
+            intent: context.screenSpec.intent,
             route: context.screenSpec.route,
-            previewStates: context.screenSpec.previewStates.map(\.id),
+            previewStates: resolvedPreviewStateIDsForRendering(context.screenSpec),
             reviewChecklist: context.screenSpec.reviewChecklist,
             motionPatterns: context.screenSpec.motion.map(\.patternId),
             sourcePaths: [
@@ -57,14 +64,32 @@ struct HTMLRenderer {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         try encoder.encode(review).write(to: reviewURL)
 
+        let shellAssets = resolveShellAssets(contractRoot: context.contractRoot)
+        try write(
+            renderShellLayout(
+                template: shellAssets.layout,
+                screenHTMLRelativePath: "html/\(htmlName)",
+                reviewReportRelativePath: "report.review.json",
+                tokensCSSRelativePath: "html/tokens.css",
+                reviewDocument: review
+            ),
+            to: shellIndexURL
+        )
+        try write(shellAssets.css, to: shellCSSURL)
+        try write(shellAssets.script, to: shellJSURL)
+
         return RenderHTMLReport(
             ok: true,
             screenId: context.screenSpec.screenId,
             outputDirectory: outputDirectory.path,
+            entrypointPath: shellIndexURL.path,
             artifacts: [
                 .init(kind: "html_screen", path: htmlURL.path),
-                .init(kind: "html_index", path: indexURL.path),
+                .init(kind: "html_index", path: htmlIndexURL.path),
                 .init(kind: "html_tokens", path: cssURL.path),
+                .init(kind: "preview_shell_html", path: shellIndexURL.path),
+                .init(kind: "preview_shell_css", path: shellCSSURL.path),
+                .init(kind: "preview_shell_js", path: shellJSURL.path),
                 .init(kind: "review_report", path: reviewURL.path),
             ],
             reviewReportPath: reviewURL.path
@@ -78,7 +103,7 @@ struct HTMLRenderer {
         try data.write(to: url)
     }
 
-    private func renderIndex(htmlName: String, screenId: String) -> String {
+    private func renderHTMLIndex(htmlName: String, screenId: String) -> String {
         """
         <!doctype html>
         <html lang="en">
@@ -92,6 +117,45 @@ struct HTMLRenderer {
         </body>
         </html>
         """
+    }
+
+    private func renderShellLayout(
+        template: String,
+        screenHTMLRelativePath: String,
+        reviewReportRelativePath: String,
+        tokensCSSRelativePath: String,
+        reviewDocument: HTMLReviewDocument
+    ) -> String {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let reviewJSONData = (try? encoder.encode(reviewDocument)) ?? Data("{}".utf8)
+        let reviewJSONBase64 = reviewJSONData.base64EncodedString()
+
+        return template
+            .replacingOccurrences(of: "__SCREEN_ID__", with: escape(reviewDocument.screenId))
+            .replacingOccurrences(of: "__SCREEN_HTML__", with: escape(screenHTMLRelativePath))
+            .replacingOccurrences(of: "__REVIEW_JSON__", with: escape(reviewReportRelativePath))
+            .replacingOccurrences(of: "__TOKENS_CSS__", with: escape(tokensCSSRelativePath))
+            .replacingOccurrences(of: "__REVIEW_DATA_B64__", with: escape(reviewJSONBase64))
+    }
+
+    private func resolveShellAssets(contractRoot: URL) -> (layout: String, css: String, script: String) {
+        let projectRoot = contractRoot.deletingLastPathComponent()
+        let sourceRoot = projectRoot.appendingPathComponent("PreviewApp/shell", isDirectory: true)
+
+        return (
+            layout: readShellAsset(named: "layout.html", in: sourceRoot, fallback: HTMLShellFallbackAssets.layout),
+            css: readShellAsset(named: "review.css", in: sourceRoot, fallback: HTMLShellFallbackAssets.css),
+            script: readShellAsset(named: "review.js", in: sourceRoot, fallback: HTMLShellFallbackAssets.script)
+        )
+    }
+
+    private func readShellAsset(named fileName: String, in directory: URL, fallback: String) -> String {
+        let url = directory.appendingPathComponent(fileName)
+        guard let text = try? String(contentsOf: url, encoding: .utf8), !text.isEmpty else {
+            return fallback
+        }
+        return text
     }
 
     private func renderTokensCSS(tokens: TokenStore) -> String {
@@ -341,8 +405,8 @@ struct HTMLRenderer {
         """
     }
 
-    private func renderHTML(context: ScreenContext) -> String {
-        let previewStates = resolvedPreviewStates(for: context.screenSpec)
+    private func renderScreenHTML(context: ScreenContext) -> String {
+        let previewStates = resolvedPreviewStatesForRendering(context.screenSpec)
         let previewSections = previewStates.map { state in
             renderPreviewState(state, context: context)
         }.joined(separator: "\n")
@@ -357,42 +421,8 @@ struct HTMLRenderer {
           <link rel="stylesheet" href="tokens.css" />
         </head>
         <body>
-          <main class="review-shell">
-            <header class="review-header">
-              <p class="review-kicker">HTML Canonical Review</p>
-              <h1 class="review-title">\(escape(context.screenSpec.title))</h1>
-              <div class="review-meta">
-                <span class="chip">app \(escape(context.appSpec.appId))</span>
-                <span class="chip">flow \(escape(context.flowSpec.flowId))</span>
-                <span class="chip">screen \(escape(context.screenSpec.screenId))</span>
-                <span class="chip">route \(escape(context.screenSpec.route))</span>
-              </div>
-            </header>
-            <section class="review-grid">
-              <div class="review-panel">
-                <section class="preview-stack">
-                  \(previewSections)
-                </section>
-              </div>
-              <aside class="review-panel">
-                <section class="review-card">
-                  <p class="review-section-title">Intent</p>
-                  <p class="component-subtle">\(escape(context.screenSpec.intent ?? "No explicit intent."))</p>
-                </section>
-                <section class="review-card">
-                  <p class="review-section-title">Review Checklist</p>
-                  <ul class="review-list">
-                    \(context.screenSpec.reviewChecklist.map { "<li>\(escape($0))</li>" }.joined(separator: "\n                    "))
-                  </ul>
-                </section>
-                <section class="review-card">
-                  <p class="review-section-title">Motion</p>
-                  <ul class="review-list">
-                    \(context.screenSpec.motion.isEmpty ? "<li>none</li>" : context.screenSpec.motion.map { "<li>\(escape($0.patternId)) via \(escape($0.trigger))</li>" }.joined(separator: "\n                    "))
-                  </ul>
-                </section>
-              </aside>
-            </section>
+          <main class="preview-stack" data-screen-id="\(escape(context.screenSpec.screenId))">
+            \(previewSections)
           </main>
         </body>
         </html>
@@ -410,7 +440,7 @@ struct HTMLRenderer {
         )
 
         return """
-        <section class="preview-state" data-preview-state="\(escape(previewState.id))">
+        <section class="preview-state" id="state-\(escape(previewState.id))" data-preview-state="\(escape(previewState.id))">
           <div>
             <p class="preview-state-name">\(escape(previewState.id))</p>
             \(note)
@@ -551,13 +581,6 @@ struct HTMLRenderer {
           <input class="field-input" type="\(escape(inputType))" value="\(escape(value))" />
         </label>
         """
-    }
-
-    private func resolvedPreviewStates(for screen: ScreenSpec) -> [PreviewState] {
-        if screen.previewStates.isEmpty {
-            return [PreviewState(id: "default")]
-        }
-        return screen.previewStates
     }
 
     private func previewValue(for fieldID: String, previewState: PreviewState, screen: ScreenSpec) -> String? {
