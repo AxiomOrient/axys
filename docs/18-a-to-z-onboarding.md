@@ -9,7 +9,7 @@
 
 ## 2. 먼저 읽을 문서
 
-1. `README.md`
+1. 이 문서의 baseline 명령과 빠른 시작
 2. `MASTER_BLUEPRINT.md`
 3. `docs/11-execution-plan.md`
 4. `docs/12-task-matrix.md`
@@ -106,3 +106,52 @@ checkout
 
 이 저장소는 이미 동작하는 baseline을 가진다.
 다음 단계는 baseline 유지가 아니라, 핵심기능 completion line까지 compiler, validator, generator, review, integration을 같은 계약으로 닫는 것이다.
+
+## 빠른 시작
+
+```bash
+swift build
+swift test
+
+./.build/debug/dsctl validate \
+  --config examples/configs/dsctl.config.json \
+  --screen-id login \
+  --json
+
+./.build/debug/dsctl validate \
+  --config examples/configs/dsctl.config.json \
+  --screen-doc examples/screen-doc/login.md \
+  --json
+
+./.build/debug/dsctl compile-screen-doc \
+  --config examples/configs/dsctl.config.json \
+  --screen-id login \
+  --json
+
+./.build/debug/dsctl generate \
+  --config examples/configs/dsctl.config.json \
+  --screen-id login \
+  --json
+
+./.build/debug/dsctl generate \
+  --config examples/configs/dsctl.config.json \
+  --screen-doc examples/screen-doc/login.md \
+  --out build/from-screen-doc/login \
+  --json
+
+./.build/debug/dsctl generate-bundle \
+  --config examples/configs/dsctl.config.json \
+  --screen-doc-dir examples/screen-doc \
+  --out build/from-screen-doc/bundle \
+  --json
+
+./.build/debug/ds-doc-sync export-contracts \
+  --project-root . \
+  --json
+
+./.build/debug/ds-doc-sync sync \
+  --project-root . \
+  --json
+```
+
+`ds-doc-sync sync` 는 `export-contracts -> export-fragments -> render -> verify` 를 순서대로 수행하는 full doc-sync entrypoint 다.
